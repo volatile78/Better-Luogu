@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Better Luogu!
 // @namespace    http://tampermonkey.net/
-// @version      1.11.2
+// @version      1.12
 // @description:zh  洛谷扩展
 // @description  Luogu Expansion
 // @author       volatile
@@ -59,17 +59,9 @@
             const [cookiename, cookievalue] = cookie.split('=');
             if(cookiename === name) return cookievalue;
         }
-        if(name == 'color'){
-            setcookie('color',nowcolor,114514,'/','luogu.com.cn',true);
-            return nowcolor;
-        }
-        else if(name == 'hanger'){
-            setcookie('hanger','null',114514,'/','luogu.com.cn',true);
-            return "null";
-        }
-        else if(name == 'version'){
-            setcookie('version','1.11.2',114514,'/','luogu.com.cn',true);
-            return "1.11.2";
+        if(name == 'version'){
+            setcookie('version','1.12',114514,'/','luogu.com.cn',true);
+            return "1.12";
         }
         else if(name == 'update'){
             setcookie('update','true',114514,'/','luogu.com.cn',true);
@@ -86,6 +78,10 @@
         else if(name=='code'){
             setcookie('code','1',1919810,'/','luogu.com.cn',true);
             return "1";
+        }
+        else if(name=='love'){
+            setcookie('love','0',1919810,'/','luogu.com.cn',true);
+            return "0";
         }
     }
 
@@ -130,7 +126,7 @@
             let parser = new DOMParser();
             let doc = parser.parseFromString(response.responseText, "text/html");
             let version = doc.querySelector('dd.script-show-version');
-            if(version.textContent != '1.11.2' && nowurl == 'https://www.luogu.com.cn/'){
+            if(version.textContent != '1.12' && nowurl == 'https://www.luogu.com.cn/'){
                 if(getcookie('update')=='true'){
                     swal("Better Luogu!","有新版本",{
                         buttons: {
@@ -148,7 +144,7 @@
                         if(value == "false"){
                             deletecookie('update');
                             setcookie('update','false',7,'/','luogu.com.cn',true);
-                            swal("Better Luogu!","好的，你可以在 BETTER 菜单中点击更新来更新");
+                            swal("Better Luogu!","好的，你可以在  菜单中点击更新来更新");
                         }
                         else window.open('https://greasyfork.org/scripts/487511-better-luogu','_blank');
                     });
@@ -156,48 +152,12 @@
             }
         }
     });
-
-    function colorschange(changecolor){
-        if(changecolor == 'Gray') return 'rgb(191, 191, 191)';
-        else if(changecolor == 'Blue') return 'rgb(14, 144, 210)';
-        else if(changecolor == 'Green') return 'rgb(94, 185, 94)';
-        else if(changecolor == 'Orange') return 'rgb(230, 126 34)';
-        else if(changecolor == 'Red') return 'rgb(231, 76, 60)';
-        else if(changecolor == 'Purple') return 'rgb(142, 68, 173)';
-        else if(changecolor == 'Brown') return 'rgb(173, 139, 0)';
-    }
-
     function update(){
-        swal("Better Luogu!","修复了一些bug");
+        swal("Better Luogu!","添加了点赞提醒功能和插入B站视频功能");
     }
-
-    let changecolor = getcookie('color');
-
-    let tagchange = getcookie('tag');
-    let tag = document.createElement("span");
-    let tagcolor;
-    if(changecolor!='null'){
-        if(changecolor != 'lg-fg-blue' && changecolor != 'lg-fg-orange'){
-            tagcolor = changecolor.replace('fg','bg');
-            tag.className = 'am-badge am-radius ' + tagcolor;
-        }
-        else if(changecolor == 'lg-fg-blue'){
-            tagcolor = 'color-none';
-            tag.className = 'am-badge am-radius ' + tagcolor;
-            tag.style.background = 'rgb(52, 152, 219)';
-        }
-        else if(changecolor == 'lg-fg-orange'){
-            tagcolor = 'color-none';
-            tag.className = 'am-badge am-radius ' + tagcolor;
-            tag.style.background = 'rgb(243, 156, 17)';
-        }
-        if(changecolor != 'lg-fg-brown') tag.textContent = tagchange;
-        else tag.textContent = '作弊者';
-    }
-
-    if(getcookie('version')!='1.11.2'&&nowurl=='https://www.luogu.com.cn/'){
+    if(getcookie('version')!='1.12'&&nowurl=='https://www.luogu.com.cn/'){
         deletecookie('version');
-        setcookie('version','1.11.2',114514,'/','luogu.com.cn',true);
+        setcookie('version','1.12',114514,'/','luogu.com.cn',true);
         update();
     }
     function reallyDeleteChat(id){
@@ -227,133 +187,8 @@
     }
 
     function reloadmenu(){
-            swal("Better Luogu!","更改成功","success",{button: "刷新"}).then((value) => {location.reload();});
+        swal("Better Luogu!","更改成功","success",{button: "刷新"}).then((value) => {location.reload();});
     }
-
-    function changeusercolor(){
-        swal({
-            title: "Better Luogu!",
-            text: "输入一个词语（规则见官网）",
-            content: "input",
-            button: {
-                text: "更改",
-                closeModal: false,
-            },
-        })
-        .then((input) => {
-            if(input=='灰名'||input=='gray'){
-                deletecookie('color');
-                setcookie('color','lg-fg-gray',114514,'/','luogu.com.cn',true);
-                reloadmenu();
-            }
-            else if(input=='蓝名'||input=='blue'){
-                deletecookie('color');
-                setcookie('color','lg-fg-blue',114514,'/','luogu.com.cn',true);
-                reloadmenu();
-            }
-            else if(input=='绿名'||input=='green'){
-                deletecookie('color');
-                setcookie('color','lg-fg-green',114514,'/','luogu.com.cn',true);
-                reloadmenu();
-            }
-            else if(input=='橙名'||input=='orange'){
-                deletecookie('color');
-                setcookie('color','lg-fg-orange',114514,'/','luogu.com.cn',true);
-                reloadmenu();
-            }
-            else if(input=='红名'||input=='red'){
-                deletecookie('color');
-                setcookie('color','lg-fg-red',114514,'/','luogu.com.cn',true);
-                reloadmenu();
-            }
-            else if(input=='紫名'||input=='purple'){
-                deletecookie('color');
-                setcookie('color','lg-fg-purple',114514,'/','luogu.com.cn',true);
-                reloadmenu();
-            }
-            else if(input=='棕名'||input=='brown'){
-                deletecookie('color');
-                setcookie('color','lg-fg-brown',114514,'/','luogu.com.cn',true);
-                reloadmenu();
-            }
-            else if(input=='复原'||input=='recover'){
-                deletecookie('color');
-                setcookie('color',nowcolor,114514,'/','luogu.com.cn',true);
-                reloadmenu();
-            }
-            else swal("Better Luogu!","请按规范输入","error");
-        });
-    }
-
-    function changehanger(){
-        swal("Better Luogu!","选择一个勾子", {
-            buttons: {
-                cancel: "取消",
-                greenhanger: {
-                    text: "绿勾",
-                    value: "greenhanger",
-                },
-                bluehanger: {
-                    text: "蓝勾",
-                    value: "bluehanger",
-                },
-                goldenhanger: {
-                    text: "金勾",
-                    value: "goldenhanger",
-                },
-                nullhanger: {
-                    text: "无勾",
-                    value: "nullhanger",
-                },
-            }
-        })
-        .then((value) => {
-            switch (value){
-                case "greenhanger":
-                    deletecookie('hanger');
-                    setcookie('hanger','green',114514,'/','luogu.com.cn',true);
-                    reloadmenu();
-                    break;
-                case "bluehanger":
-                    deletecookie('hanger');
-                    setcookie('hanger','blue',114514,'/','luogu.com.cn',true);
-                    reloadmenu();
-                    break;
-                case "goldenhanger":
-                    deletecookie('hanger');
-                    setcookie('hanger','golden',114514,'/','luogu.com.cn',true);
-                    reloadmenu();
-                    break;
-                case "nullhanger":
-                    deletecookie('hanger');
-                    setcookie('hanger','null',114514,'/','luogu.com.cn',true);
-                    reloadmenu();
-                    break;
-            }
-        });
-    }
-
-    function changetag(){
-        swal({
-            title: "Better Luogu!",
-            text: "输入一个tag（无输入以取消）",
-            content: "input",
-            button: {
-                text: "更改",
-                closeModal: false,
-            },
-        })
-        .then((value) => {
-            if(getcookie('color') == 'lg-fg-brown') swal("Better Luogu!","当前为棕名","error");
-            else if(value.length > 10) swal("Better Luogu!","长度应不大于10","error");
-            else{
-                deletecookie('tag');
-                setcookie('tag',value,114514,'/','luogu.com.cn',true);
-                reloadmenu();
-            }
-        });
-    }
-
     function not1(){
         let words = ["78;101;118;101;114;32;103;111;110;110;97;32;103;105;118;101;32;121;111;117;32;117;112;","99;110;109;","83;66;","73;65;75;73;79;73;","49;49;52;53;49;52;","49;57;49;57;56;49;48;","115;116;111;","111;114;122;"];
         let cishu = Math.floor(Math.random()*10)+1;
@@ -517,6 +352,29 @@
         });
     }
 
+    function love(){
+        let l=getcookie('love');
+        var text='开启';
+        if(l=='1') text='关闭';
+        swal({
+            title: "Better Luogu!",
+            text: "当给别人的专栏点赞时给Ta发送私信提醒（慎用）",
+            buttons: {
+                cancel: "取消",
+                agree: {
+                    text: text,
+                    value: "agree"
+                }
+            }
+        })
+        .then((value)=>{
+            if(value=="agree"){
+                if(l=='1') setcookie('love',"0",114514,'/','luogu.com.cn',true);
+                else setcookie('love',"1",114514,'/','luogu.com.cn',true);
+            }
+        });
+    }
+
     let search = document.createElement('div');
     search.className = 'search-container';
     let search_input = document.createElement('input');
@@ -542,18 +400,11 @@
         mask.style.visibility='hidden';
     }
 
-    let video=document.createElement('span');
-    video.className='cs-toolbar-tool';
-    video.innerHTML='<svg xmlns="http://www.w3.org/2000/svg" class="svg-inline--fa fa-at cs-icon" aria-hidden="true" focusable="false" data-prefix="far" data-icon="at" role="img"  viewBox="0 0 512 512"><path d="M12 9c-1.626 0-3 1.374-3 3s1.374 3 3 3 3-1.374 3-3-1.374-3-3-3z"></path><path d="M20 5h-2.586l-2.707-2.707A.996.996 0 0 0 14 2h-4a.996.996 0 0 0-.707.293L6.586 5H4c-1.103 0-2 .897-2 2v11c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V7c0-1.103-.897-2-2-2zm-8 12c-2.71 0-5-2.29-5-5s2.29-5 5-5 5 2.29 5 5-2.29 5-5 5z"></path></svg><span class="cs-tooltip">插入B站视频</span>';
-
     if(nowurl == 'https://www.luogu.com.cn/'){
         let searchuser = document.createElement('div');
         searchuser.className='lg-article';
         searchuser.innerHTML='<h2>Better Luogu!</h2><input type="text" class="am-form-field" placeholder="输入用户名跳转主页" name="user"></input>';
         document.querySelector('div.lg-right > div:nth-child(1)').insertAdjacentElement('beforebegin', searchuser);
-        let color = document.querySelector('#app-old > div.lg-index-content.am-center > div:nth-child(1) > div > div > div > div.am-u-md-4.lg-punch.am-text-center > h2 > a');
-        if(changecolor != 'null') color.className=changecolor;
-
         function removeDivWithText(text) {
             document.querySelectorAll('div').forEach(div => {
                 if(div.textContent === text) div.remove();
@@ -596,26 +447,8 @@
         links.insertAdjacentHTML('beforeend','<p><strong>Better Luogu!</strong><br><a href="http://blg.volatiles.dpdns.org/" target="_blank">Better Luogu!</a><br><a href="https://yx.dahi.edu.eu.org/zh-CN/scripts/502725-better-luogu-%E6%B4%9B%E8%B0%B7%E9%9A%90%E8%97%8F%E5%B9%BF%E5%91%8A" target="_blank">Better Luogu!-洛谷隐藏广告</a></p>');
     }
     window.onload=function(){
-        let _hanger = getcookie('hanger');
-        let __hanger = document.createElementNS('http://www.w3.org/2000/svg','svg');
-        __hanger.setAttribute('width','16');
-        __hanger.setAttribute('height','16');
-        __hanger.setAttribute('viewBox','0 0 16 16');
-        __hanger.setAttribute('style','margin-bottom: -3px;');
-        if(_hanger == 'green')__hanger.setAttribute('fill','#5eb95e');
-        else if(_hanger == 'blue') __hanger.setAttribute('fill','#3498db');
-        else if(_hanger == 'golden') __hanger.setAttribute('fill','#f1c40f');
-        if(_hanger != 'null'&&document.getElementsByClassName('sb_amazeui')[0] != null) document.getElementsByClassName('sb_amazeui')[0].remove();
-
-        let ___hanger = document.createElementNS('http://www.w3.org/2000/svg','path');
-        ___hanger.setAttribute('d','M16 8C16 6.84375 15.25 5.84375 14.1875 5.4375C14.6562 4.4375 14.4688 3.1875 13.6562 2.34375C12.8125 1.53125 11.5625 1.34375 10.5625 1.8125C10.1562 0.75 9.15625 0 8 0C6.8125 0 5.8125 0.75 5.40625 1.8125C4.40625 1.34375 3.15625 1.53125 2.34375 2.34375C1.5 3.1875 1.3125 4.4375 1.78125 5.4375C0.71875 5.84375 0 6.84375 0 8C0 9.1875 0.71875 10.1875 1.78125 10.5938C1.3125 11.5938 1.5 12.8438 2.34375 13.6562C3.15625 14.5 4.40625 14.6875 5.40625 14.2188C5.8125 15.2812 6.8125 16 8 16C9.15625 16 10.1562 15.2812 10.5625 14.2188C11.5938 14.6875 12.8125 14.5 13.6562 13.6562C14.4688 12.8438 14.6562 11.5938 14.1875 10.5938C15.25 10.1875 16 9.1875 16 8ZM11.4688 6.625L7.375 10.6875C7.21875 10.8438 7 10.8125 6.875 10.6875L4.5 8.3125C4.375 8.1875 4.375 7.96875 4.5 7.8125L5.3125 7C5.46875 6.875 5.6875 6.875 5.8125 7.03125L7.125 8.34375L10.1562 5.34375C10.3125 5.1875 10.5312 5.1875 10.6562 5.34375L11.4688 6.15625C11.5938 6.28125 11.5938 6.5 11.4688 6.625Z');
-        __hanger.appendChild(___hanger);
-        let _hanger_ = document.createElement("a");
-        _hanger_.href = 'https://www.luogu.com/discuss/142324';
-        _hanger_.appendChild(__hanger);
-
         let button = document.createElement("a");
-        button.innerHTML = '<button id="NLTB" style=\"background-color: rgb\(94,114,228\);border-radius: 7px;color: white;border: none;padding: 7px 12px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;margin: 4px 2px;cursor: pointer;border: none;box-shadow: 2px 3px 7px #000;\">BETTER</button>';
+        button.innerHTML = '<button id="NLTB" style=\"background-color: rgb\(94,114,228\);border-radius: 7px;color: white;border: none;padding: 7px 12px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;margin: 4px 2px;cursor: pointer;border: none;box-shadow: 2px 3px 7px #000;\"><b>BETTER<b></button>';
         if(nowurl == 'https://www.luogu.com.cn/' || nowurl.includes('https://www.luogu.com.cn/chat') || nowurl.includes('https://www.luogu.com.cn/user/notification') || (nowurl.includes('https://www.luogu.com.cn/user/') && !nowurl.includes('https://www.luogu.com.cn/user/setting'))){
             document.querySelector('#app > div.main-container > div.wrapper.wrapped.lfe-body.header-layout.tiny > div.container > nav').insertAdjacentElement('beforebegin', button);
 
@@ -628,18 +461,6 @@
                     document.head.appendChild(swalcss);
                     swal("Better Luogu!","选择一个更改", {
                         buttons: {
-                            username: {
-                                text: "颜色",
-                                value: "color",
-                            },
-                            hanger: {
-                                text: "勾子",
-                                value: "hanger",
-                            },
-                            tag: {
-                                text: "tag",
-                                value: "tag",
-                            },
                             update: {
                                 text: "更新",
                                 value: "update",
@@ -660,23 +481,17 @@
                                 text: "缺省源",
                                 value: "code"
                             },
+                            love: {
+                                text: "点赞提醒",
+                                value: "love"
+                            },
                             not: {
                                 text: "千万别点!!!",
                                 value: "not"
                             }
                         },
-                    })
-                        .then((value) => {
+                    }).then((value) => {
                         switch (value){
-                            case "color":
-                                changeusercolor();
-                                break;
-                            case "hanger":
-                                changehanger();
-                                break;
-                            case "tag":
-                                changetag();
-                                break;
                             case "update":
                                 deletecookie('update');
                                 setcookie('update','true',114514,'/','luogu.com.cn',true);
@@ -694,6 +509,9 @@
                             case "code":
                                 code();
                                 break;
+                            case "love":
+                                love();
+                                break;
                             case "not": not();
                         }
                     });
@@ -704,14 +522,6 @@
         let nowuid=getcookie('uid');
 
         if(nowurl == 'https://www.luogu.com.cn/'){
-            if(getcookie('hanger')!='null'){
-                document.querySelector('#app-old > div.lg-index-content.am-center > div:nth-child(1) > div > div > div > div.am-u-md-4.lg-punch.am-text-center > h2 > a').innerHTML += '&nbsp;';
-                document.querySelector('#app-old > div.lg-index-content.am-center > div:nth-child(1) > div > div > div > div.am-u-md-4.lg-punch.am-text-center > h2 > a').appendChild(_hanger_);
-            }
-            if(getcookie('tag')!=''){
-                document.querySelector('#app-old > div.lg-index-content.am-center > div:nth-child(1) > div > div > div > div.am-u-md-4.lg-punch.am-text-center > h2 > a').innerHTML += '&nbsp;';
-                document.querySelector('#app-old > div.lg-index-content.am-center > div:nth-child(1) > div > div > div > div.am-u-md-4.lg-punch.am-text-center > h2 > a').appendChild(tag);
-            }
             $('input[name="user"]').keydown(function(e){
                 if(e.which===13){
                     let searchusr=$('input[name="user"]').val();
@@ -797,7 +607,7 @@
                 let dis = document.createElement('a');
                 dis.href = 'https://lglg.top/'+discussID;
                 dis.innerHTML = '<button data-v-505b6a97="" data-v-17e7c5b0="" class="solid lform-size-middle" type="button">在保存站打开</button>';
-                document.querySelector('#app > div.main-container.lside-nav > main > div > div > div.side > div.l-card > div.btn-actions').appendChild(dis);
+                document.getElementsByClassName('btn-actions')[0].appendChild(dis);
             }
         }
         else if(nowurl.includes('https://www.luogu.com.cn/chat')){
@@ -906,9 +716,6 @@
                 }
             }
         });
-        if(document.querySelector('#app > div.main-container.lside-drawer > main > div > div > div.main > div.l-card.reply-editor > div.casket.cs-main.textarea > div.cs-header > div > div:nth-child(1)')!=null){
-            document.querySelector('#app > div.main-container.lside-drawer > main > div > div > div.main > div.l-card.reply-editor > div.casket.cs-main.textarea > div.cs-header > div > div:nth-child(1)').appendChild(video);
-        }
         if(nowurl.includes('https://www.luogu.com.cn/problem/')&&nowurl.includes('#ide')){
             let sfcode=getcookie('code');
             if(sfcode=="1"){
@@ -961,20 +768,27 @@
             toolbar.appendChild(zdk);
             let epigraph=document.createElement('span');
             epigraph.className='cs-toolbar-tool';
-            epigraph.innerHTML='<svg xmlns="http://www.w3.org/2000/svg" fill="none" height="24" viewBox="0 0 24 24" width="24"><path d="M22 18.0048C22 18.5544 21.5544 19 21.0048 19H12.9952C12.4456 19 12 18.5544 12 18.0048C12 17.4552 12.4456 17.0096 12.9952 17.0096H21.0048C21.5544 17.0096 22 17.4552 22 18.0048Z" fill="currentColor"/><path d="M22 12.0002C22 12.5499 21.5544 12.9954 21.0048 12.9954H2.99519C2.44556 12.9954 2 12.5499 2 12.0002C2 11.4506 2.44556 11.0051 2.99519 11.0051H21.0048C21.5544 11.0051 22 11.4506 22 12.0002Z" fill="currentColor"/><path d="M21.0048 6.99039C21.5544 6.99039 22 6.54482 22 5.99519C22 5.44556 21.5544 5 21.0048 5H8.99519C8.44556 5 8 5.44556 8 5.99519C8 6.54482 8.44556 6.99039 8.99519 6.99039H21.0048Z" fill="currentColor"/></svg><span class="cs-tooltip">epigraph</span>'
+            epigraph.innerHTML='<svg xmlns="http://www.w3.org/2000/svg" fill="none" height="24" viewBox="0 0 24 24" width="24"><path d="M22 18.0048C22 18.5544 21.5544 19 21.0048 19H12.9952C12.4456 19 12 18.5544 12 18.0048C12 17.4552 12.4456 17.0096 12.9952 17.0096H21.0048C21.5544 17.0096 22 17.4552 22 18.0048Z" fill="currentColor"/><path d="M22 12.0002C22 12.5499 21.5544 12.9954 21.0048 12.9954H2.99519C2.44556 12.9954 2 12.5499 2 12.0002C2 11.4506 2.44556 11.0051 2.99519 11.0051H21.0048C21.5544 11.0051 22 11.4506 22 12.0002Z" fill="currentColor"/><path d="M21.0048 6.99039C21.5544 6.99039 22 6.54482 22 5.99519C22 5.44556 21.5544 5 21.0048 5H8.99519C8.44556 5 8 5.44556 8 5.99519C8 6.54482 8.44556 6.99039 8.99519 6.99039H21.0048Z" fill="currentColor"/></svg><span class="cs-tooltip">epigraph</span>';
             toolbar.appendChild(epigraph);
             let center=document.createElement('span');
             center.className='cs-toolbar-tool';
-            center.innerHTML='<?xml version="1.0"?><svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg"><rect fill="none" height="256" width="256"/><path d="M40,76H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16Z"/><path d="M64,100a8,8,0,0,0,0,16H192a8,8,0,0,0,0-16Z"/><path d="M216,140H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z"/><path d="M192,180H64a8,8,0,0,0,0,16H192a8,8,0,0,0,0-16Z"/></svg><span class="cs-tooltip">居中</span>';
+            center.innerHTML='<svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg"><rect fill="none" height="256" width="256"/><path d="M40,76H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16Z"/><path d="M64,100a8,8,0,0,0,0,16H192a8,8,0,0,0,0-16Z"/><path d="M216,140H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z"/><path d="M192,180H64a8,8,0,0,0,0,16H192a8,8,0,0,0,0-16Z"/></svg><span class="cs-tooltip">居中</span>';
             toolbar.appendChild(center);
             let right=document.createElement('span');
             right.className='cs-toolbar-tool';
-            right.innerHTML='<?xml version="1.0"?><svg fill="none" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M20 5C20.5523 5 21 5.44772 21 6C21 6.55228 20.5523 7 20 7H4C3.44772 7 3 6.55228 3 6C3 5.44772 3.44772 5 4 5H20Z" fill="currentColor"/><path d="M20 9C20.5523 9 21 9.44772 21 10C21 10.5523 20.5523 11 20 11H12C11.4477 11 11 10.5523 11 10C11 9.44772 11.4477 9 12 9H20Z" fill="currentColor"/><path d="M21 14C21 13.4477 20.5523 13 20 13H4C3.44772 13 3 13.4477 3 14C3 14.5523 3.44772 15 4 15H20C20.5523 15 21 14.5523 21 14Z" fill="currentColor"/><path d="M20 17C20.5523 17 21 17.4477 21 18C21 18.5523 20.5523 19 20 19H12C11.4477 19 11 18.5523 11 18C11 17.4477 11.4477 17 12 17H20Z" fill="currentColor"/></svg><span class="cs-tooltip">居右</span>';
+            right.innerHTML='<svg fill="none" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M20 5C20.5523 5 21 5.44772 21 6C21 6.55228 20.5523 7 20 7H4C3.44772 7 3 6.55228 3 6C3 5.44772 3.44772 5 4 5H20Z" fill="currentColor"/><path d="M20 9C20.5523 9 21 9.44772 21 10C21 10.5523 20.5523 11 20 11H12C11.4477 11 11 10.5523 11 10C11 9.44772 11.4477 9 12 9H20Z" fill="currentColor"/><path d="M21 14C21 13.4477 20.5523 13 20 13H4C3.44772 13 3 13.4477 3 14C3 14.5523 3.44772 15 4 15H20C20.5523 15 21 14.5523 21 14Z" fill="currentColor"/><path d="M20 17C20.5523 17 21 17.4477 21 18C21 18.5523 20.5523 19 20 19H12C11.4477 19 11 18.5523 11 18C11 17.4477 11.4477 17 12 17H20Z" fill="currentColor"/></svg><span class="cs-tooltip">居右</span>';
             toolbar.appendChild(right);
+            let bilibili=document.createElement('span');
+            bilibili.className='cs-toolbar-tool';
+            bilibili.innerHTML='<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g><path d="M0 0h24v24H0z" fill="none"/><path d="M18.223 3.086a1.25 1.25 0 0 1 0 1.768L17.08 5.996h1.17A3.75 3.75 0 0 1 22 9.747v7.5a3.75 3.75 0 0 1-3.75 3.75H5.75A3.75 3.75 0 0 1 2 17.247v-7.5a3.75 3.75 0 0 1 3.75-3.75h1.166L5.775 4.855a1.25 1.25 0 1 1 1.767-1.768l2.652 2.652c.079.079.145.165.198.257h3.213c.053-.092.12-.18.199-.258l2.651-2.652a1.25 1.25 0 0 1 1.768 0zm.027 5.42H5.75a1.25 1.25 0 0 0-1.247 1.157l-.003.094v7.5c0 .659.51 1.199 1.157 1.246l.093.004h12.5a1.25 1.25 0 0 0 1.247-1.157l.003-.093v-7.5c0-.69-.56-1.25-1.25-1.25zm-10 2.5c.69 0 1.25.56 1.25 1.25v1.25a1.25 1.25 0 1 1-2.5 0v-1.25c0-.69.56-1.25 1.25-1.25zm7.5 0c.69 0 1.25.56 1.25 1.25v1.25a1.25 1.25 0 1 1-2.5 0v-1.25c0-.69.56-1.25 1.25-1.25z"/></g></svg><span class="cs-tooltip">插入B站视频</span>';
+            toolbar.appendChild(bilibili);
             let mb=document.querySelector('body > div.casket');
             let p=document.createElement('div');
             p.className='cs-dialog-container';
             p.innerHTML='<div class="cs-dialog"><div class=""><div class="cs-dialog-header">插入折叠框<div class="cs-close-container"><svg class="svg-inline--fa fa-xmark cs-icon" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path class="" fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg></div></div><div><div class="cs-dialog-item"><div class="cs-dialog-item-label">折叠框类型</div><select class="cs-dialog-item-content"><option value="info">信息</option><option value="warning">警告</option><option value="success">成功</option><option value="error">错误</option></select></div><!----><div class="cs-dialog-submit-area"><button class="cs-dialog-button cs-dialog-button-info">开启自动打开</button><button class="cs-dialog-button cs-dialog-button-info">确认</button><button class="cs-dialog-button cs-dialog-button-info">取消</button></div></div></div><!----></div>';
+            let q=document.createElement('div');
+            q.className='cs-dialog-container';
+            q.innerHTML='<div class="cs-dialog"><div class=""><div class="cs-dialog-header">插入B站视频<div class="cs-close-container"><svg class="svg-inline--fa fa-xmark cs-icon" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path class="" fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg></div></div><div><div class="cs-dialog-item"><div class="cs-dialog-item-label">视频av/BV号</div><input type="text" class="cs-dialog-item-content"></div><div class="cs-dialog-item"><div class="cs-dialog-item-label">分P</div><input type="text" class="cs-dialog-item-content"></div><div class="cs-dialog-item"><div class="cs-dialog-item-label">开始位置（秒）</div><input type="text" class="cs-dialog-item-content"></div><!----><div class="cs-dialog-submit-area"><button class="cs-dialog-button cs-dialog-button-info">确认</button><button class="cs-dialog-button cs-dialog-button-info">取消</button></div></div></div><!----></div>';
             zdk.addEventListener('click',function(){
                 mb.appendChild(p);
                 let close1=document.querySelector('body > div.casket > div > div > div > div.cs-dialog-header > div');
@@ -1006,6 +820,32 @@
                     nowline.after(fline);
                 });
             });
+            bilibili.addEventListener('click',function(){
+                mb.appendChild(q);
+                let close1=document.querySelector('body > div.casket > div > div > div > div.cs-dialog-header > div');
+                let close2=document.querySelector('body > div.casket > div > div > div > div:nth-child(2) > div.cs-dialog-submit-area > button:nth-child(2)');
+                let yes=document.querySelector('body > div.casket > div > div > div > div:nth-child(2) > div.cs-dialog-submit-area > button:nth-child(1)');
+                close1.addEventListener('click',function(){q.remove();});
+                close2.addEventListener('click',function(){q.remove();});
+                yes.addEventListener('click',function(){
+                    let id=document.querySelector('body > div.casket > div > div > div > div:nth-child(2) > div:nth-child(1) > input').value;
+                    let fp=document.querySelector('body > div.casket > div > div > div > div:nth-child(2) > div:nth-child(2) > input').value;
+                    let start=document.querySelector('body > div.casket > div > div > div > div:nth-child(2) > div:nth-child(3) > input').value;
+                    document.querySelector('body > div.casket > div > div > div > div:nth-child(2) > div:nth-child(1) > input').value='';
+                    document.querySelector('body > div.casket > div > div > div > div:nth-child(2) > div:nth-child(2) > input').value='';
+                    document.querySelector('body > div.casket > div > div > div > div:nth-child(2) > div:nth-child(3) > input').value='';
+                    q.remove();
+                    let t='![](bilibili:'+id;
+                    if(fp!=''){
+                        t+='?page='+fp;
+                        if(start!='') t+='&t='+start;
+                    }
+                    else if(start!='') t+='?t='+start;
+                    t+=')';
+                    let nowline=document.getElementsByClassName('cm-activeLine')[0];
+                    nowline.innerHTML+=t;
+                });
+            });
             epigraph.addEventListener('click',function(){
                 let nowline=document.getElementsByClassName('cm-activeLine')[0];
                 let fline=document.createElement('div');
@@ -1035,6 +875,24 @@
                 sline.innerText=':::';
                 nowline.after(sline);
                 nowline.after(fline);
+            });
+        }
+        if(nowurl.includes('https://www.luogu.com.cn/article/')&&getcookie('love')=='1'){
+            let avatar=document.querySelector('#app > div.main-container > main > div.article-banner.columba-content-wrap.wrapper > div > div > div.author > img');
+            let avatarsrc=avatar.src;
+            let title=document.querySelector('#article-title').innerText;
+            let author=0;
+            for(var i=41;i<avatarsrc.length;i++){
+                if(!(avatarsrc[i]>='0'&&avatarsrc[i]<='9')) break;
+                author=author*10+(avatarsrc[i]-'0');
+            }
+            let love=document.getElementsByClassName('button-2line')[1];
+            love.addEventListener('click',function(){
+                love=document.getElementsByClassName('button-2line')[1];
+                if(!love.classList.contains('active')){
+                    console.log('1');
+                    sendMessage(author,'给你的文章《'+title+'》点了个赞');
+                }
             });
         }
     }
