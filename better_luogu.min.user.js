@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name         Better Luogu!
-// @namespace    http://tampermonkey.net/
-// @version      1.12
+// @namespace    https://www.luogu.com.cn/user/772464
+// @version      1.12.1
 // @description:zh  洛谷扩展
 // @description  Luogu Expansion
 // @author       volatile
 // @match        *://*.luogu.com.cn/*
 // @match        *://*.luogu.com/*
-// @icon         https://fecdn.luogu.com.cn/luogu/logo.png?0fdd294ff62e331d2f70e1a37ba4ee02
+// @icon         https://s21.ax1x.com/2024/08/11/pASqf4x.png
 // @grant        GM_addStyle
 // @grant        GM_getValue
 // @grant        GM_setValue
@@ -28,7 +28,7 @@
     let nowurl = window.location.href;
     var swalcss=document.createElement("style");
     swalcss.innerHTML=".swal-overlay {background-color: rgba(0, 0, 0, 0.5);}";
-    var css = ".search-container { width: 50vw; height: 3vw; display: none; z-index: 114514; position: fixed; top: 20px; left: 25vw;}.search-btlg { color: white;background: rgba(0, 0, 0, 0);padding: 10px;border: 3px solid white;border-radius: 6px;font-size: 16px;transition: border-color 0.3s; width: 50vw; height: 3vw; left: 25vw;}.search-btlg:focus { outline: none;} .search-btlg::placeholder{ color: white;} #mask { position: fixed; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000; }";
+    var css = ".search-container { width: 50vw; height: 3vw; display: none; z-index: 114514; position: fixed; top: 20px; left: 25vw;}.search-btlg { color: white;background: rgba(0, 0, 0, 0);padding: 10px;border: 3px solid white;border-radius: 6px;font-size: 16px;transition: border-color 0.3s; width: 50vw; height: 3vw; left: 25vw;}.search-btlg:focus { outline: none;} .search-btlg::placeholder{ color: white;} #mask { position: fixed; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000; } div[data-v-0a593618]{display: none;} div[data-v-fdcd5a58]{display: none;}";
     var style = document.createElement("style");
     style.innerHTML = css;
     document.head.appendChild(style);
@@ -153,7 +153,7 @@
         }
     });
     function update(){
-        swal("Better Luogu!","添加了点赞提醒功能和插入B站视频功能");
+        swal("Better Luogu!","移除了插入B站视频功能");
     }
     if(getcookie('version')!='1.12'&&nowurl=='https://www.luogu.com.cn/'){
         deletecookie('version');
@@ -764,7 +764,7 @@
         if(toolbar!=null){
             let zdk=document.createElement('span');
             zdk.className='cs-toolbar-tool';
-            zdk.innerHTML='<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g><path d="M0 0H24V24H0z" fill="none"/><path d="M21 18v2H3v-2h18zM6.596 3.904L8.01 5.318 4.828 8.5l3.182 3.182-1.414 1.414L2 8.5l4.596-4.596zM21 11v2h-9v-2h9zm0-7v2h-9V4h9z"/></g></svg><span class="cs-tooltip">折叠框</span>';
+            zdk.innerHTML='<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g><path d="M0 0H24V24H0z" fill="none"/><path d="M21 18v2H3v-2h18zM6.596 3.904L8.01 5.318 4.828 8.5l3.182 3.182-1.414 1.414L2 8.5l4.596-4.596zM21 11v2h-9v-2h9zm0-7v2h-9V4h9z"/></g></svg><span class="cs-tooltip">Callouts</span>';
             toolbar.appendChild(zdk);
             let epigraph=document.createElement('span');
             epigraph.className='cs-toolbar-tool';
@@ -778,17 +778,10 @@
             right.className='cs-toolbar-tool';
             right.innerHTML='<svg fill="none" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M20 5C20.5523 5 21 5.44772 21 6C21 6.55228 20.5523 7 20 7H4C3.44772 7 3 6.55228 3 6C3 5.44772 3.44772 5 4 5H20Z" fill="currentColor"/><path d="M20 9C20.5523 9 21 9.44772 21 10C21 10.5523 20.5523 11 20 11H12C11.4477 11 11 10.5523 11 10C11 9.44772 11.4477 9 12 9H20Z" fill="currentColor"/><path d="M21 14C21 13.4477 20.5523 13 20 13H4C3.44772 13 3 13.4477 3 14C3 14.5523 3.44772 15 4 15H20C20.5523 15 21 14.5523 21 14Z" fill="currentColor"/><path d="M20 17C20.5523 17 21 17.4477 21 18C21 18.5523 20.5523 19 20 19H12C11.4477 19 11 18.5523 11 18C11 17.4477 11.4477 17 12 17H20Z" fill="currentColor"/></svg><span class="cs-tooltip">居右</span>';
             toolbar.appendChild(right);
-            let bilibili=document.createElement('span');
-            bilibili.className='cs-toolbar-tool';
-            bilibili.innerHTML='<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g><path d="M0 0h24v24H0z" fill="none"/><path d="M18.223 3.086a1.25 1.25 0 0 1 0 1.768L17.08 5.996h1.17A3.75 3.75 0 0 1 22 9.747v7.5a3.75 3.75 0 0 1-3.75 3.75H5.75A3.75 3.75 0 0 1 2 17.247v-7.5a3.75 3.75 0 0 1 3.75-3.75h1.166L5.775 4.855a1.25 1.25 0 1 1 1.767-1.768l2.652 2.652c.079.079.145.165.198.257h3.213c.053-.092.12-.18.199-.258l2.651-2.652a1.25 1.25 0 0 1 1.768 0zm.027 5.42H5.75a1.25 1.25 0 0 0-1.247 1.157l-.003.094v7.5c0 .659.51 1.199 1.157 1.246l.093.004h12.5a1.25 1.25 0 0 0 1.247-1.157l.003-.093v-7.5c0-.69-.56-1.25-1.25-1.25zm-10 2.5c.69 0 1.25.56 1.25 1.25v1.25a1.25 1.25 0 1 1-2.5 0v-1.25c0-.69.56-1.25 1.25-1.25zm7.5 0c.69 0 1.25.56 1.25 1.25v1.25a1.25 1.25 0 1 1-2.5 0v-1.25c0-.69.56-1.25 1.25-1.25z"/></g></svg><span class="cs-tooltip">插入B站视频</span>';
-            toolbar.appendChild(bilibili);
             let mb=document.querySelector('body > div.casket');
             let p=document.createElement('div');
             p.className='cs-dialog-container';
-            p.innerHTML='<div class="cs-dialog"><div class=""><div class="cs-dialog-header">插入折叠框<div class="cs-close-container"><svg class="svg-inline--fa fa-xmark cs-icon" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path class="" fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg></div></div><div><div class="cs-dialog-item"><div class="cs-dialog-item-label">折叠框类型</div><select class="cs-dialog-item-content"><option value="info">信息</option><option value="warning">警告</option><option value="success">成功</option><option value="error">错误</option></select></div><!----><div class="cs-dialog-submit-area"><button class="cs-dialog-button cs-dialog-button-info">开启自动打开</button><button class="cs-dialog-button cs-dialog-button-info">确认</button><button class="cs-dialog-button cs-dialog-button-info">取消</button></div></div></div><!----></div>';
-            let q=document.createElement('div');
-            q.className='cs-dialog-container';
-            q.innerHTML='<div class="cs-dialog"><div class=""><div class="cs-dialog-header">插入B站视频<div class="cs-close-container"><svg class="svg-inline--fa fa-xmark cs-icon" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path class="" fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg></div></div><div><div class="cs-dialog-item"><div class="cs-dialog-item-label">视频av/BV号</div><input type="text" class="cs-dialog-item-content"></div><div class="cs-dialog-item"><div class="cs-dialog-item-label">分P</div><input type="text" class="cs-dialog-item-content"></div><div class="cs-dialog-item"><div class="cs-dialog-item-label">开始位置（秒）</div><input type="text" class="cs-dialog-item-content"></div><!----><div class="cs-dialog-submit-area"><button class="cs-dialog-button cs-dialog-button-info">确认</button><button class="cs-dialog-button cs-dialog-button-info">取消</button></div></div></div><!----></div>';
+            p.innerHTML='<div class="cs-dialog"><div class=""><div class="cs-dialog-header">插入Callouts<div class="cs-close-container"><svg class="svg-inline--fa fa-xmark cs-icon" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path class="" fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg></div></div><div><div class="cs-dialog-item"><div class="cs-dialog-item-label">类型</div><select class="cs-dialog-item-content"><option value="info">info</option><option value="warning">warning</option><option value="success">success</option><option value="error">error</option></select></div><!----><div class="cs-dialog-submit-area"><button class="cs-dialog-button cs-dialog-button-info">开启自动打开</button><button class="cs-dialog-button cs-dialog-button-info">确认</button><button class="cs-dialog-button cs-dialog-button-info">取消</button></div></div></div><!----></div>';
             zdk.addEventListener('click',function(){
                 mb.appendChild(p);
                 let close1=document.querySelector('body > div.casket > div > div > div > div.cs-dialog-header > div');
@@ -818,32 +811,6 @@
                     nowline.after(tline);
                     nowline.after(sline);
                     nowline.after(fline);
-                });
-            });
-            bilibili.addEventListener('click',function(){
-                mb.appendChild(q);
-                let close1=document.querySelector('body > div.casket > div > div > div > div.cs-dialog-header > div');
-                let close2=document.querySelector('body > div.casket > div > div > div > div:nth-child(2) > div.cs-dialog-submit-area > button:nth-child(2)');
-                let yes=document.querySelector('body > div.casket > div > div > div > div:nth-child(2) > div.cs-dialog-submit-area > button:nth-child(1)');
-                close1.addEventListener('click',function(){q.remove();});
-                close2.addEventListener('click',function(){q.remove();});
-                yes.addEventListener('click',function(){
-                    let id=document.querySelector('body > div.casket > div > div > div > div:nth-child(2) > div:nth-child(1) > input').value;
-                    let fp=document.querySelector('body > div.casket > div > div > div > div:nth-child(2) > div:nth-child(2) > input').value;
-                    let start=document.querySelector('body > div.casket > div > div > div > div:nth-child(2) > div:nth-child(3) > input').value;
-                    document.querySelector('body > div.casket > div > div > div > div:nth-child(2) > div:nth-child(1) > input').value='';
-                    document.querySelector('body > div.casket > div > div > div > div:nth-child(2) > div:nth-child(2) > input').value='';
-                    document.querySelector('body > div.casket > div > div > div > div:nth-child(2) > div:nth-child(3) > input').value='';
-                    q.remove();
-                    let t='![](bilibili:'+id;
-                    if(fp!=''){
-                        t+='?page='+fp;
-                        if(start!='') t+='&t='+start;
-                    }
-                    else if(start!='') t+='?t='+start;
-                    t+=')';
-                    let nowline=document.getElementsByClassName('cm-activeLine')[0];
-                    nowline.innerHTML+=t;
                 });
             });
             epigraph.addEventListener('click',function(){
