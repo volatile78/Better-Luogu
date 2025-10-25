@@ -406,8 +406,8 @@
 
     function getComment(lid,lastid){
         if(lastid){
-            document.querySelector('#app > div.main-container.lside-nav > main > div > div > div > div.body > div > div').remove();
-            document.querySelector('#app > div.main-container.lside-nav > main > div > div > div > div.body > div').appendChild(rvmg);
+            document.querySelector('#app > div.main-container > main > div > div > div > div.body > div > div').remove();
+            document.querySelector('#app > div.main-container > main > div > div > div > div.body > div').appendChild(rvmg);
         }
         $.get('https://www.luogu.com.cn/article/'+lid+'/replies'+(lastid?'?after='+lastid.toString():''),{},function(res){
             for(let i=0;res.replySlice[i]!=undefined;i++){
@@ -917,7 +917,7 @@
             });
         }
         else if(nowurl.includes('https://www.luogu.com.cn/article/')&&nowurl.includes('/edit')){
-            let rvpg=document.querySelector('#app > div.main-container.lside-nav > main > div > div > div > div.header > nav > ul > li:nth-child(2)');
+            let rvpg=document.querySelector('#app > div.main-container > main > div > div > div > div.header > nav > ul > li:nth-child(2)');
             if(rvpg!=null){
                 if(rvpg.innerText=='功能说明'){
                     let lid='';
@@ -931,9 +931,9 @@
                     setInterval(function(){
                         if(rvpg.classList.contains('selected')){
                             if(flag){
-                                if(document.querySelector('#app > div.main-container.lside-nav > main > div > div > div > div.body > div > div')!=null){
-                                    document.querySelector('#app > div.main-container.lside-nav > main > div > div > div > div.body > div > div').remove();
-                                    document.querySelector('#app > div.main-container.lside-nav > main > div > div > div > div.body > div').appendChild(rvmg);
+                                if(document.querySelector('#app > div.main-container > main > div > div > div > div.body > div > div')!=null){
+                                    document.querySelector('#app > div.main-container > main > div > div > div > div.body > div > div').remove();
+                                    document.querySelector('#app > div.main-container > main > div > div > div > div.body > div').appendChild(rvmg);
                                     flag=false;
                                 }
                             }
