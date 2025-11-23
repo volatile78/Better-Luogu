@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Better Luogu!
 // @namespace    https://www.luogu.com.cn/user/772464
-// @version      1.13.1
+// @version      1.13.2
 // @description:zh  洛谷扩展
 // @description  Luogu Expansion
 // @author       volatile
@@ -56,7 +56,7 @@
     let nowurl = window.location.href;
     var swalcss=document.createElement("style");
     swalcss.innerHTML=".swal-overlay {background-color: rgba(0, 0, 0, 0.5);}";
-    var css = ".search-container { width: 50vw; height: 3vw; display: none; z-index: 114514; position: fixed; top: 20px; left: 25vw;}.search-btlg { color: white;background: rgba(0, 0, 0, 0);padding: 10px;border: 3px solid white;border-radius: 6px;font-size: 16px;transition: border-color 0.3s; width: 50vw; height: 3vw; left: 25vw;}.search-btlg:focus { outline: none;} .search-btlg::placeholder{ color: white;} #mask { position: fixed; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000; } div[data-v-0a593618]{display: none;} div[data-v-fdcd5a58]{display: none;}";
+    var css = ".search-container{width:600px;max-width:90vw;display:none;z-index:10000;position:fixed;top:20%;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.98);backdrop-filter:blur(20px);border-radius:16px;box-shadow:0 20px 40px rgba(0,0,0,0.15),0 0 0 1px rgba(255,255,255,0.1);overflow:hidden;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);border:1px solid rgba(255,255,255,0.2)}.search-btlg{width:100%;height:70px;padding:0 60px 0 25px;border:none;border-radius:0;font-size:18px;font-weight:500;transition:all 0.3s ease;background:transparent;color:#2d3748;box-sizing:border-box;letter-spacing:-0.2px}.search-btlg:focus{outline:none;background:rgba(102,126,234,0.02)}.search-btlg::placeholder{color:#a0aec0;font-weight:400;letter-spacing:normal}#mask{position:fixed;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);z-index:9999;transition:all 0.3s ease}div[data-v-0a593618],div[data-v-fdcd5a58]{display:none}@media (prefers-color-scheme: dark){.search-container{background:rgba(45,55,72,0.95);border:1px solid rgba(255,255,255,0.1)}.search-btlg{color:#e2e8f0}.search-btlg::placeholder{color:#718096}}@media (max-width:768px){.search-container{width:95vw;top:10%;border-radius:12px}.search-btlg{height:60px;font-size:16px;padding:0 50px 0 20px}}";
     var style = document.createElement("style");
     style.innerHTML = css;
     document.head.appendChild(style);
@@ -88,8 +88,8 @@
             if(cookiename === name) return cookievalue;
         }
         if(name == 'version'){
-            setcookie('version','1.13.1',114514,'/','luogu.com.cn',true);
-            return "1.13.1";
+            setcookie('version','1.13.2',114514,'/','luogu.com.cn',true);
+            return "1.13.2";
         }
         else if(name == 'update'){
             setcookie('update','true',114514,'/','luogu.com.cn',true);
@@ -147,11 +147,11 @@
         });
     }
     function update(){
-        swal("Better Luogu!","修复了工具栏有时加载不出来的bug",{buttons:{next:{text:"下一条",value:"next"}}}).then((value)=>{swal("Better Luogu!","添加了时间显示")});
+        swal("Better Luogu!","重写了一些ui");//,{buttons:{next:{text:"下一条",value:"next"}}}).then((value)=>{swal("Better Luogu!","添加了时间显示")});
     }
-    if(getcookie('version')!='1.13.1'&&nowurl=='https://www.luogu.com.cn/'){
+    if(getcookie('version')!='1.13.2'&&nowurl=='https://www.luogu.com.cn/'){
         deletecookie('version');
-        setcookie('version','1.13.1',114514,'/','luogu.com.cn',true);
+        setcookie('version','1.13.2',114514,'/','luogu.com.cn',true);
         update();
     }
     function reallyDeleteChat(id){
@@ -231,7 +231,7 @@
                 }
             },
         })
-        .then((value) => {
+            .then((value) => {
             switch (value){
                 case "not1":
                     not1();
@@ -318,7 +318,7 @@
                         closeModal: false,
                     },
                 })
-                .then((input) => {
+                    .then((input) => {
                     setcookie('engine',input,114514,'/','luogu.com.cn',true);
                     swal("Better Luogu!","更改成功","success");
                 });
@@ -338,7 +338,7 @@
                 }
             }
         })
-        .then((value)=>{
+            .then((value)=>{
             if(value=="agree"){
                 setcookie('code',"1",114514,'/','luogu.com.cn',true);
                 window.open('https://www.luogu.com.cn/problem/P1000#ide','_self');
@@ -361,7 +361,7 @@
                 }
             }
         })
-        .then((value)=>{
+            .then((value)=>{
             if(value=="agree"){
                 if(l=='1') setcookie('love',"0",114514,'/','luogu.com.cn',true);
                 else setcookie('love',"1",114514,'/','luogu.com.cn',true);
@@ -371,18 +371,21 @@
 
     let search = document.createElement('div');
     search.className = 'search-container';
-    let search_input = document.createElement('input');
-    search_input.type = 'text';
-    search_input.className = 'search-btlg';
-    search_input.placeholder = 'Search...';
-    search_input.name='search';
-    search.appendChild(search_input);
+    search.innerHTML = '<input type="text" class="search-btlg" placeholder="搜索网页内容..." name="search" autocomplete="off">';
     document.body.appendChild(search);
+
+    let search_input = search.querySelector('.search-btlg');
 
     function checkUpdate(){
         $.get('https://www.luogu.com.cn/api/user/search?keyword=1416603',{},function(res){
             let slogan=res['users'][0].slogan;
-            if(slogan!=getcookie('version')) swal("Better Luogu!","有新版本"+slogan,"warning",{button: "前往更新"}).then((value) => {window.open('https://www.luogu.me/article/w31r5kzz','_self');});
+            if(slogan!=getcookie('version')) swal("Better Luogu!","有新版本"+slogan,"warning",{buttons: {
+                cancel: "取消",
+                update: {
+                    text: "前往更新",
+                    value: "update"
+                }
+            }}).then((value) => {if(value=='update') window.open('https://www.luogu.me/article/w31r5kzz','_self');});
             else swal("Better Luogu!","已是最新版本"+slogan,"warning");
         });
     }
@@ -625,7 +628,7 @@
             const tb = document.getElementById("NLTB");
 
             tb.addEventListener('click', function(){
-                window.location.href('https://blg.volatiles.dpdns.org/');
+                window.location.href='https://blg.volatiles.dpdns.org/';
             });
         }
         else{
@@ -633,7 +636,7 @@
             const tb = document.getElementById("NLTB");
 
             tb.addEventListener('click', function(){
-                window.location.href('https://blg.volatiles.dpdns.org/');
+                window.location.href='https://blg.volatiles.dpdns.org/';
             });
         }
 
@@ -699,6 +702,10 @@
             menu.style.border = 'none';
             menu.style.float = 'right';
             menu.innerHTML='<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"></path></svg>';
+            if(nowurl.includes('?uid=')){
+                once=false;
+                document.querySelector('#app > div.main-container > main > div > div.card.wrapper.padding-none > div.main > div > div.top-container > div.title').appendChild(menu);
+            }
             const observer = new MutationObserver((mutations) => {
                 mutations.forEach((mutation) => {
                     if (mutation.type === 'attributes'){
@@ -726,37 +733,71 @@
                     if(chatuid[i]>='0'&&chatuid[i]<='9') uid=chatuid[i]+uid;
                     else break;
                 }
-                swal("Better Luogu!",chatuser,{
-                    buttons: {
-                        delete: {
-                            text: "清空私信",
-                            value: "delete"
-                        },
-                        quxiao: {
-                            text: "取消",
-                            value: "cancel"
-                        }
-                    }
-                })
-                .then((value)=>{
-                    switch(value){
-                        case 'delete':
-                            deleteChat(uid);
-                            break;
-                    }
+                $.get('https://www.luogu.com.cn/api/user/search?keyword='+uid,{},function(res){
+                    let userInfo = res['users'][0];
+                    let avatar = userInfo.avatar;
+                    let userType;
+                    let userColor=userInfo.color;
+
+                    if(userColor=='Gray') userColor='rgb(191, 191, 191)';
+                    else if(userColor=='Blue') userColor='rgb(52, 152, 219)';
+                    else if(userColor=='Green') userColor='rgb(82, 196, 26)';
+                    else if(userColor=='Orange') userColor='rgb(243, 156, 17)';
+                    else if(userColor=='Red') userColor='rgb(254, 76, 97)';
+                    else if(userColor=='Purple') userColor='rgb(157, 61, 207)';
+                    else if(userColor=='Cheater') userColor='rgb(173, 139, 0)';
+
+                    if(userInfo.isAdmin) userType='管理员';
+                    else if(userInfo.isBanned) userType='封禁用户';
+                    else userType='普通用户';
+
+                    let customModal = document.createElement('div');
+                    customModal.className = 'custom-modal';
+                    customModal.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;border-radius:16px;box-shadow:0 20px 40px rgba(0,0,0,0.15);z-index:10001;width:400px;max-width:90vw;display:none;';
+                    customModal.innerHTML = `<div style="padding:25px;text-align:center"><div style="margin-bottom:20px"><img src="${avatar}" style="width:80px;height:80px;border-radius:50%;border:3px solid ${userColor}"/></div><h3 style="margin:10px 0 5px;color:${userColor}">${chatuser}</h3><p style="color:#718096;margin:5px 0">UID: ${uid}</p><p style="color:#667eea;margin:5px 0 20px">${userType}</p><button class="clear-chat-btn" style="background:#e74c3c;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-size:14px;width:100%">清空私信</button></div>`;
+                    document.body.appendChild(customModal);
+
+                    customModal.style.display = 'block';
+                    showMask();
+
+                    document.querySelector('.clear-chat-btn').addEventListener('click', function(){
+                        deleteChat(uid);
+                        customModal.style.display = 'none';
+                        hideMask();
+                    });
+
+                    mask.addEventListener('click', function(){
+                        customModal.style.display = 'none';
+                        hideMask();
+                    });
                 });
             });
+
+            let modalStyle = document.createElement('style');
+            modalStyle.innerHTML = '.custom-modal{animation:modalFadeIn 0.3s ease}@keyframes modalFadeIn{from{opacity:0;transform:translate(-50%,-60%)}to{opacity:1;transform:translate(-50%,-50%)}}@media (prefers-color-scheme: dark){.custom-modal{background:rgba(45,55,72,0.95)}}';
+            document.head.appendChild(modalStyle);
         }
+        let isSearch = false;
         document.addEventListener('keydown', function(event){
             if(event.altKey && event.key == 's'){
-                if(search.style.display == 'none'){
+                if(!isSearch){
                     search.style.display = 'flex';
                     showMask();
+                    isSearch=true;
                 }
                 else{
                     search.style.display = 'none';
                     search_input.value='';
                     hideMask();
+                    isSearch=false;
+                }
+            }
+            if(event.keyCode===27){
+                if(isSearch){
+                    search.style.display = 'none';
+                    search_input.value='';
+                    hideMask();
+                    isSearch=false;
                 }
             }
         });
@@ -764,13 +805,15 @@
             search.style.display = 'none';
             search_input.value='';
             hideMask();
+            isSearch=false;
         });
+
         $('input[name="search"]').keydown(function(e){
             if(e.which===13){
                 let sc=$('input[name="search"]').val();
                 if(sc!=""){
                     if(getcookie('engine')=='baidu') window.open('https://www.baidu.com/s?wd=' + sc,'_blank');
-                    else if(getcookie('engine')=='google') window.open('https://mirrorgoogle.us.kg/search?q=' + sc,'_blank');
+                    else if(getcookie('engine')=='google') window.open('https://google.com/search?q=' + sc,'_blank');
                     else if(getcookie('engine')=='bing') window.open('https://cn.bing.com/search?q=' + sc,'_blank');
                     else window.open(getcookie('engine')+'='+sc,'_blank');
                 }
@@ -911,7 +954,6 @@
             love.addEventListener('click',function(){
                 love=document.getElementsByClassName('button-2line')[1];
                 if(!love.classList.contains('active')){
-                    console.log('1');
                     sendMessage(author,'给你的文章《'+title+'》点了个赞');
                 }
             });
@@ -947,7 +989,6 @@
                         }
                         else if(e.target&&e.target.classList.contains('btn-delete')){
                             let commentId=e.target.getAttribute('data-comment-id');
-                            console.log(commentId);
                             deleteComment(lid,commentId);
                         }
                         else if(e.target&&e.target.id==='batchDelete'){
