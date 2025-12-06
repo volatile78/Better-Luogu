@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Better Luogu!
 // @namespace    https://www.luogu.com.cn/user/772464
-// @version      1.13.2
+// @version      1.13.3
 // @description:zh  洛谷扩展
 // @description  Luogu Expansion
 // @author       volatile
@@ -21,6 +21,7 @@
 // @connect      greasyfork.org
 // @require      https://unpkg.com/sweetalert/dist/sweetalert.min.js
 // @require      https://code.jquery.com/jquery-3.6.0.min.js
+// @require      https://cdn.jsdelivr.net/npm/marked/marked.min.js
 // @license      MIT
 // ==/UserScript==
 (function() {
@@ -56,7 +57,7 @@
     let nowurl = window.location.href;
     var swalcss=document.createElement("style");
     swalcss.innerHTML=".swal-overlay {background-color: rgba(0, 0, 0, 0.5);}";
-    var css = ".search-container{width:600px;max-width:90vw;display:none;z-index:10000;position:fixed;top:20%;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.98);backdrop-filter:blur(20px);border-radius:16px;box-shadow:0 20px 40px rgba(0,0,0,0.15),0 0 0 1px rgba(255,255,255,0.1);overflow:hidden;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);border:1px solid rgba(255,255,255,0.2)}.search-btlg{width:100%;height:70px;padding:0 60px 0 25px;border:none;border-radius:0;font-size:18px;font-weight:500;transition:all 0.3s ease;background:transparent;color:#2d3748;box-sizing:border-box;letter-spacing:-0.2px}.search-btlg:focus{outline:none;background:rgba(102,126,234,0.02)}.search-btlg::placeholder{color:#a0aec0;font-weight:400;letter-spacing:normal}#mask{position:fixed;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);z-index:9999;transition:all 0.3s ease}div[data-v-0a593618],div[data-v-fdcd5a58]{display:none}@media (prefers-color-scheme: dark){.search-container{background:rgba(45,55,72,0.95);border:1px solid rgba(255,255,255,0.1)}.search-btlg{color:#e2e8f0}.search-btlg::placeholder{color:#718096}}@media (max-width:768px){.search-container{width:95vw;top:10%;border-radius:12px}.search-btlg{height:60px;font-size:16px;padding:0 50px 0 20px}}";
+    var css = ".search-container{width:600px;max-width:90vw;display:none;z-index:10000;position:fixed;top:20%;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.98);backdrop-filter:blur(20px);border-radius:16px;box-shadow:0 20px 40px rgba(0,0,0,0.15),0 0 0 1px rgba(255,255,255,0.1);overflow:hidden;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);border:1px solid rgba(255,255,255,0.2)}.search-btlg{width:100%;height:70px;padding:0 60px 0 25px;border:none;border-radius:0;font-size:18px;font-weight:500;transition:all 0.3s ease;background:transparent;color:#2d3748;box-sizing:border-box;letter-spacing:-0.2px}.search-btlg:focus{outline:none;background:rgba(102,126,234,0.02)}.search-btlg::placeholder{color:#a0aec0;font-weight:400;letter-spacing:normal}#mask{position:fixed;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);z-index:100;transition:all 0.3s ease}div[data-v-0a593618],div[data-v-fdcd5a58]{display:none}@media (prefers-color-scheme: dark){.search-container{background:rgba(45,55,72,0.95);border:1px solid rgba(255,255,255,0.1)}.search-btlg{color:#e2e8f0}.search-btlg::placeholder{color:#718096}}@media (max-width:768px){.search-container{width:95vw;top:10%;border-radius:12px}.search-btlg{height:60px;font-size:16px;padding:0 50px 0 20px}}.contest-search-box-btlg{display:flex;align-items:center;border:1px solid #e0e0e0;border-radius:4px;padding:0 8px;height:36px;width:300px;box-sizing:border-box;}.contest-search-input-btlg{flex:1;border:none;outline:none;height:100%;font-size:14px;padding:0 4px;}.contest-search-input-btlg::placeholder{color:#999;}.contest-search-icon-btlg{width:16px;height:16px;fill:#999;cursor:pointer;margin-left:4px;}";
     var style = document.createElement("style");
     style.innerHTML = css;
     document.head.appendChild(style);
@@ -88,8 +89,8 @@
             if(cookiename === name) return cookievalue;
         }
         if(name == 'version'){
-            setcookie('version','1.13.2',114514,'/','luogu.com.cn',true);
-            return "1.13.2";
+            setcookie('version','1.13.3',114514,'/','luogu.com.cn',true);
+            return "1.13.3";
         }
         else if(name == 'update'){
             setcookie('update','true',114514,'/','luogu.com.cn',true);
@@ -111,12 +112,12 @@
             setcookie('love','0',1919810,'/','luogu.com.cn',true);
             return "0";
         }
+        else if(name=='notice'){
+            setcookie('notice',0,1919810,'/','luogu.com.cn',true);
+            return 0;
+        }
     }
-
-
-    function deletecookie(name){
-        document.cookie = name+ '=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/';
-    }
+    function deletecookie(name){ document.cookie = name+ '=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/';}
 
     async function sendMessage(uid,content){
         await fetch("https://www.luogu.com.cn/api/chat/new", {
@@ -147,11 +148,11 @@
         });
     }
     function update(){
-        swal("Better Luogu!","重写了一些ui");//,{buttons:{next:{text:"下一条",value:"next"}}}).then((value)=>{swal("Better Luogu!","添加了时间显示")});
+        swal("Better Luogu!","1.比赛搜索用户",{buttons:{next:{text:"下一条",value:"next"}}}).then((value)=>{swal("Better Luogu!","2.用户主页查看")});
     }
-    if(getcookie('version')!='1.13.2'&&nowurl=='https://www.luogu.com.cn/'){
+    if(getcookie('version')!='1.13.3'&&nowurl=='https://www.luogu.com.cn/'){
         deletecookie('version');
-        setcookie('version','1.13.2',114514,'/','luogu.com.cn',true);
+        setcookie('version','1.13.3',114514,'/','luogu.com.cn',true);
         update();
     }
     function reallyDeleteChat(id){
@@ -507,10 +508,31 @@
         }
     }
 
+    let noticeBoard = document.createElement('div');
+    noticeBoard.className = 'notice-board';
+    noticeBoard.innerHTML = '<div class="notice-content"><div class="notice-header"><h3>公告</h3><button class="notice-close">&times;</button></div><div class="notice-body"></div><div class="notice-footer"><button class="notice-confirm">已阅</button></div></div>';
+
+    let noticeStyle = document.createElement('style');
+    noticeStyle.innerHTML = '.notice-board{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(255,255,255,0.8);backdrop-filter:blur(20px);border-radius:16px;box-shadow:0 20px 40px rgba(0,0,0,0.15);z-index:10002;width:700px;max-width:95vw;display:none;border:1px solid rgba(255,255,255,0.2)}.notice-content{padding:25px}.notice-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.notice-header h3{margin:0;color:#2c3e50;font-weight:600}.notice-close{background:none;border:none;font-size:24px;cursor:pointer;color:#718096}.notice-body{color:#4a5568;line-height:1.6;margin-bottom: 25px;}@media (prefers-color-scheme: dark){.notice-board{background:rgba(45,55,72,0.8)}.notice-header h3{color:#e2e8f0}.notice-body{color:#a0aec0}.notice-footer{border-top-color:rgba(255,255,255,0.1)}}@keyframes noticeFadeIn{from{opacity:0;transform:translate(-50%,-60%)}to{opacity:1;transform:translate(-50%,-50%)}}.notice-board{animation:noticeFadeIn 0.3s ease}.notice-footer{display:flex;justify-content:flex-end;padding-top:15px;border-top:1px solid rgba(0, 0, 0, 0.05);}.notice-confirm{background:#3182ce;color:white;border:none;border-radius:8px;padding:10px 20px;font-size:14px;font-weight:500;cursor:pointer;transition:background 0.2s}.notice-confirm:hover{background:#2b6cb0}';
+    document.head.appendChild(noticeStyle);
+    document.body.appendChild(noticeBoard);
+
+    function showNotice(title, content) {
+        noticeBoard.querySelector('.notice-header h3').textContent = title;
+        noticeBoard.querySelector('.notice-body').innerHTML = content;
+        noticeBoard.style.display = 'block';
+        showMask();
+    }
+
+    function hideNotice() {
+        noticeBoard.style.display = 'none';
+        hideMask();
+    }
+
     if(nowurl == 'https://www.luogu.com.cn/'){
         let searchuser = document.createElement('div');
         searchuser.className='lg-article';
-        searchuser.innerHTML='<h2>Better Luogu!</h2><input type="text" class="am-form-field" placeholder="输入用户名跳转主页" name="user"></input>';
+        searchuser.innerHTML='<h2>Better Luogu!</h2><div class="am-input-group am-input-group-primary am-input-group-sm"><input type="text" class="am-form-field" placeholder="输入用户名跳转主页" name="user"></input></div>';
         document.querySelector('div.lg-right > div:nth-child(1)').insertAdjacentElement('beforebegin', searchuser);
         function removeDivWithText(text) {
             document.querySelectorAll('div').forEach(div => {
@@ -551,9 +573,69 @@
         });
 
         let links = document.querySelector('.lg-article.am-hide-sm');
-        links.insertAdjacentHTML('beforeend','<p><strong>Better Luogu!</strong><br><a href="http://blg.volatiles.dpdns.org/" target="_blank">Better Luogu!</a><br><a href="https://yx.dahi.edu.eu.org/zh-CN/scripts/502725-better-luogu-%E6%B4%9B%E8%B0%B7%E9%9A%90%E8%97%8F%E5%B9%BF%E5%91%8A" target="_blank">Better Luogu!-洛谷隐藏广告</a></p>');
+        links.insertAdjacentHTML('beforeend','<p><strong>Better Luogu!</strong><br><a href="http://blg.volatiles.dpdns.org/" target="_blank">Better Luogu!</a><br><a href="https://yx.dahi.edu.eu.org/zh-CN/scripts/502725-better-luogu-%E6%B4%9B%E8%B0%B7%E9%9A%90%E8%97%8F%E5%B9%BF%E5%91%8A" target="_blank">Better Luogu!-洛谷隐藏广告</a><br><a href="https://www.wjx.cn/vm/wmliui0.aspx">问卷调查</a></p>');
+    }
+    function checkNotice(){
+        $.get('https://www.luogu.com.cn/api/feed/list?user=1416603',{},function(res){
+            let latestbb=res.feeds.result[0];
+            let latest=latestbb.content;
+            let latestid=latestbb.id;
+            if(latestid>getcookie('notice')){
+                let toHtml=marked.parse(latest);
+                showNotice('公告',toHtml);
+                noticeBoard.querySelector('.notice-close').addEventListener('click', hideNotice);
+                noticeBoard.querySelector('.notice-confirm').addEventListener('click', hideNotice);
+                mask.addEventListener('click', hideNotice);
+                deletecookie('notice');
+                setcookie('notice',latestid,114514,'/','luogu.com.cn',true);
+            }
+        });
+    }
+    function lgColor(color){
+        if(color=='Gray') color='rgb(191, 191, 191)';
+        else if(color=='Blue') color='rgb(52, 152, 219)';
+        else if(color=='Green') color='rgb(82, 196, 26)';
+        else if(color=='Orange') color='rgb(243, 156, 17)';
+        else if(color=='Red') color='rgb(254, 76, 97)';
+        else if(color=='Purple') color='rgb(157, 61, 207)';
+        else if(color=='Cheater') color='rgb(173, 139, 0)';
+        return color;
+    }
+    function blockUser(uid,relationship){
+        let csrf = document.querySelector("meta[name=csrf-token]").content;
+        $.ajax({
+            url: 'https://www.luogu.com.cn/api/user/updateRelationShip',
+            type: 'POST',
+            dataType: 'json',
+            data: JSON.stringify({uid:Number(uid),relationship:relationship}),
+            cache: false,
+            headers: {
+                'Content-Type': 'application/json',
+                'x-csrf-token': csrf
+            },
+            xhrFields: {
+                withCredentials: true
+            },
+            success: function(res){
+                hideMask();
+                reloadmenu();
+            },
+            error: function(xhr,status,error){
+                const responseText = xhr.responseText;
+                let errorMsg = 'unknown';
+                try {
+                    const errorData = JSON.parse(responseText);
+                    errorMsg = errorData.errorMessage;
+                } catch (e) {
+                    errorMsg=error||status||'network';
+                }
+                hideMask();
+                if(errorMsg=='user.not_unrelated') swal("Better Luogu!","已拉黑/关注","error").then(()=>{location.reload()});
+            }
+        });
     }
     window.onload=function(){
+        checkNotice();
         let button = document.createElement("a");
         button.innerHTML = '<button id="NLTB" style=\"background-color: rgb\(94,114,228\);border-radius: 7px;color: white;border: none;padding: 7px 12px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;margin: 4px 2px;cursor: pointer;border: none;box-shadow: 2px 3px 7px #000;\"><b>BETTER<b></button>';
         if(nowurl == 'https://www.luogu.com.cn/'||nowurl.includes('https://www.luogu.com.cn/chat')||nowurl.includes('https://www.luogu.com.cn/user/notification')){
@@ -627,17 +709,13 @@
             usernav.insertAdjacentElement('beforebegin', button);
             const tb = document.getElementById("NLTB");
 
-            tb.addEventListener('click', function(){
-                window.location.href='https://blg.volatiles.dpdns.org/';
-            });
+            tb.addEventListener('click', function(){window.location.href='https://blg.volatiles.dpdns.org/';});
         }
         else{
             let usernav=document.getElementsByClassName('avatar')[0];usernav.insertAdjacentElement('beforebegin', button);
             const tb = document.getElementById("NLTB");
 
-            tb.addEventListener('click', function(){
-                window.location.href='https://blg.volatiles.dpdns.org/';
-            });
+            tb.addEventListener('click', function(){window.location.href='https://blg.volatiles.dpdns.org/';});
         }
 
         let nowuid=getcookie('uid');
@@ -648,9 +726,7 @@
                     let searchusr=$('input[name="user"]').val();
                     $.get('https://www.luogu.com.cn/api/user/search?keyword=' + searchusr, {}, function (res) {
                         var users = res['users'];
-                        if(users[0]!=null){
-                            window.open('https://www.luogu.com.cn/user/'+users[0]['uid'].toString(),'_self');
-                        }
+                        if(users[0]!=null) window.open('https://www.luogu.com.cn/user/'+users[0]['uid'].toString(),'_self');
                     });
                 }
             });
@@ -673,25 +749,6 @@
                 a.appendChild(backbtn);
             }
 
-        }
-        else if(nowurl.includes('https://www.luogu.com.cn/discuss/')||nowurl.includes('https://www.luogu.com/discuss/')){
-            let discussID = "";
-            var flag=1;
-            let discuss = nowurl.toString();
-            for(let i=0;i<discuss.length;i++){
-                if(!(discuss[i]>='0'&&discuss[i]<='9')){
-                    if(flag) continue;
-                    else break;
-                }
-                discussID += discuss[i];
-                flag=0;
-            }
-            if(discussID != ""){
-                let dis = document.createElement('a');
-                dis.href = 'https://lglg.top/'+discussID;
-                dis.innerHTML = '<button data-v-505b6a97="" data-v-17e7c5b0="" class="solid lform-size-middle" type="button">在保存站打开</button>';
-                document.getElementsByClassName('btn-actions')[0].appendChild(dis);
-            }
         }
         else if(nowurl.includes('https://www.luogu.com.cn/chat')){
             let index=document;
@@ -737,15 +794,7 @@
                     let userInfo = res['users'][0];
                     let avatar = userInfo.avatar;
                     let userType;
-                    let userColor=userInfo.color;
-
-                    if(userColor=='Gray') userColor='rgb(191, 191, 191)';
-                    else if(userColor=='Blue') userColor='rgb(52, 152, 219)';
-                    else if(userColor=='Green') userColor='rgb(82, 196, 26)';
-                    else if(userColor=='Orange') userColor='rgb(243, 156, 17)';
-                    else if(userColor=='Red') userColor='rgb(254, 76, 97)';
-                    else if(userColor=='Purple') userColor='rgb(157, 61, 207)';
-                    else if(userColor=='Cheater') userColor='rgb(173, 139, 0)';
+                    let userColor=lgColor(userInfo.color);
 
                     if(userInfo.isAdmin) userType='管理员';
                     else if(userInfo.isBanned) userType='封禁用户';
@@ -754,7 +803,7 @@
                     let customModal = document.createElement('div');
                     customModal.className = 'custom-modal';
                     customModal.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;border-radius:16px;box-shadow:0 20px 40px rgba(0,0,0,0.15);z-index:10001;width:400px;max-width:90vw;display:none;';
-                    customModal.innerHTML = `<div style="padding:25px;text-align:center"><div style="margin-bottom:20px"><img src="${avatar}" style="width:80px;height:80px;border-radius:50%;border:3px solid ${userColor}"/></div><h3 style="margin:10px 0 5px;color:${userColor}">${chatuser}</h3><p style="color:#718096;margin:5px 0">UID: ${uid}</p><p style="color:#667eea;margin:5px 0 20px">${userType}</p><button class="clear-chat-btn" style="background:#e74c3c;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-size:14px;width:100%">清空私信</button></div>`;
+                    customModal.innerHTML = `<div style="padding:25px;text-align:center"><div style="margin-bottom:20px"><img src="${avatar}" style="width:80px;height:80px;border-radius:50%;border:3px solid ${userColor}"/></div><h3 style="margin:10px 0 5px;color:${userColor}">${chatuser}</h3><p style="color:#718096;margin:5px 0">UID: ${uid}</p><p style="color:#667eea;margin:5px 0 20px">${userType}</p><button class="clear-chat-btn" style="background:#e74c3c;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-size:14px;width:100%">清空私信</button><br><br><button class="black-btn" style="background:#e74c3c;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-size:14px;width:100%">拉黑</button></div>`;
                     document.body.appendChild(customModal);
 
                     customModal.style.display = 'block';
@@ -764,6 +813,10 @@
                         deleteChat(uid);
                         customModal.style.display = 'none';
                         hideMask();
+                    });
+                    document.querySelector('.black-btn').addEventListener('click',function(){
+                        customModal.style.display = 'none';
+                        blockUser(uid,2);
                     });
 
                     mask.addEventListener('click', function(){
@@ -940,23 +993,13 @@
                 }
             }
             else toolflag=true;
-        },10);
-        if(nowurl.includes('https://www.luogu.com.cn/article/')&&getcookie('love')=='1'){
-            let avatar=document.querySelector('#app > div.main-container > main > div.article-banner.columba-content-wrap.wrapper > div > div > div.author > img');
-            let avatarsrc=avatar.src;
-            let title=document.querySelector('#article-title').innerText;
-            let author=0;
-            for(let i=41;i<avatarsrc.length;i++){
-                if(!(avatarsrc[i]>='0'&&avatarsrc[i]<='9')) break;
-                author=author*10+(avatarsrc[i]-'0');
-            }
-            let love=document.getElementsByClassName('button-2line')[1];
-            love.addEventListener('click',function(){
-                love=document.getElementsByClassName('button-2line')[1];
-                if(!love.classList.contains('active')){
-                    sendMessage(author,'给你的文章《'+title+'》点了个赞');
-                }
-            });
+        },1000);
+        if(nowurl.includes('https://www.luogu.com.cn/article/mine')){
+            const xpath = "//a[text()='编辑']";
+            const result = document.evaluate(xpath, document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+            const editLinks = [];
+            for(let i=0;i<result.snapshotLength;i++) editLinks.push(result.snapshotItem(i));
+            editLinks.forEach(link=>{link.target = '_blank';});
         }
         else if(nowurl.includes('https://www.luogu.com.cn/article/')&&nowurl.includes('/edit')){
             let rvpg=document.querySelector('#app > div.main-container > main > div > div > div > div.header > nav > ul > li:nth-child(2)');
@@ -991,9 +1034,7 @@
                             let commentId=e.target.getAttribute('data-comment-id');
                             deleteComment(lid,commentId);
                         }
-                        else if(e.target&&e.target.id==='batchDelete'){
-                            chooseComment(lid);
-                        }
+                        else if(e.target&&e.target.id==='batchDelete') chooseComment(lid);
                         else if(e.target&&e.target.id==='batchSelect'){
                             for(let i=0;i<reviews.length;i++) reviews[i].choose=1;
                             rvmghtml=`<div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; background-color: #f5f7fa; min-height: 100vh;"><div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;"><h1 style="color: #2c3e50; margin: 0; font-weight: 600;">评论管理</h1><div><button id="batchSelect" style="background-color: #27ae60; color: white; border: none; padding: 10px 16px; border-radius: 4px; cursor: pointer; margin-right: 10px; font-weight: 500;">全选</button><button id="batchDelete"style="background-color: #e74c3c; color: white; border: none; padding: 10px 16px; border-radius: 4px; cursor: pointer; font-weight: 500;">批量删除</button></div></div><div id="batchActions"style="background-color: #3498db; color: white; padding: 12px 20px; border-radius: 6px; margin-bottom: 20px; display: none; align-items: center; justify-content: space-between;"><span id="selectedCount"style="font-weight: 500;">已选择<span style="color: #3498db; font-weight: 500;"id="slct"></span>条评论</span><div><button id="selectAll"style="background: transparent; color: white; border: 1px solid white; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-right: 10px;">全选</button><button id="deselectAll"style="background: transparent; color: white; border: 1px solid white; padding: 6px 12px; border-radius: 4px; cursor: pointer;">取消选择</button></div></div><div style="background-color: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow: hidden;"><div style="display: flex; background-color: #f8f9fa; padding: 15px 20px; border-bottom: 1px solid #eaecef; font-weight: 600; color: #495057;"><div style="width: 50px; text-align: center;">选择</div><div style="width: 80px;">编号</div><div style="width: 150px;">用户名</div><div style="flex: 1;">评论内容</div><div style="width: 120px; text-align: center;">操作</div></div>`;
@@ -1006,6 +1047,255 @@
                     });
                 }
             }
+        }
+        else if(nowurl.includes('https://www.luogu.com.cn/article/')&&getcookie('love')=='1'){
+            let avatar=document.querySelector('#app > div.main-container > main > div.article-banner.columba-content-wrap.wrapper > div > div > div.author > img');
+            let avatarsrc=avatar.src;
+            let title=document.querySelector('#article-title').innerText;
+            let author=0;
+            for(let i=41;i<avatarsrc.length;i++){
+                if(!(avatarsrc[i]>='0'&&avatarsrc[i]<='9')) break;
+                author=author*10+(avatarsrc[i]-'0');
+            }
+            let love=document.getElementsByClassName('button-2line')[1];
+            love.addEventListener('click',function(){
+                love=document.getElementsByClassName('button-2line')[1];
+                if(!love.classList.contains('active')){
+                    sendMessage(author,'给你的文章《'+title+'》点了个赞');
+                }
+            });
+        }
+        else if(nowurl.includes('https://www.luogu.com.cn/user/')&&!nowurl.includes('https://www.luogu.com.cn/user/notification')&&!nowurl.includes('https://www.luogu.com.cn/user/setting')){
+            let userUid='';
+            for(let i=0;i<nowurl.length;i++){
+                if(nowurl[i]>='0'&&nowurl[i]<='9') userUid+=nowurl[i];
+                else if(userUid) break;
+            }
+            $.get('https://www.luogu.com.cn/api/user/info/'+userUid,{},function(res){
+                let isAdmin=res['user'].isAdmin;
+                let verified=res['user'].verified;
+                if(!isAdmin&&!verified){
+                    let introduction=res['user'].introduction;
+                    introduction=marked.parse(introduction);
+                    let jsCard=document.createElement('div');
+                    jsCard.setAttribute('data-v-b62e56e7','');
+                    jsCard.setAttribute('data-v-f4fefeb2','');
+                    jsCard.setAttribute('data-v-754e1ea4-s','');
+                    jsCard.className='l-card';
+                    jsCard.innerHTML=`<div data-v-f4fefeb2="" class="header"><h3 data-v-f4fefeb2="" style="margin: 0px;">个人介绍（仅Better Luogu!可见）</h3><span data-v-f4fefeb2="" class="edit-button"></span></div><div data-v-f4fefeb2="" class="lfe-marked-wrap introduction">${introduction}<div class="lfe-marked"></div></div>`;
+                    let flag=1;
+                    let main=document.querySelector('#app > div.main-container.lside-nav > main > div > div.l-card > div.user-header-bottom > div.menu > ul > li:nth-child(1) > span');
+                    setInterval(function(){
+                        if(main.classList.contains('selected')){
+                            if(flag) document.querySelector('#app > div.main-container.lside-nav > main > div > div.sidebar-container.reverse > div.main > div:nth-child(1)').insertAdjacentElement('beforebegin', jsCard);
+                            flag=0;
+                        }
+                        else flag=1;
+                        if(document.querySelector('#app > div.main-container.lside-nav > main > div > div.l-card > div.user-header-bottom > div.menu > ul > li:nth-child(8)')!=null) jsCard.remove();
+                    },1000);
+                }
+            });
+        }
+        else if(nowurl.includes('https://www.luogu.com.cn/contest/')&&!nowurl.includes('https://www.luogu.com.cn/contest/list')){
+            let contestId='';
+            for(let i=0;i<nowurl.length;i++){
+                if(nowurl[i]>='0'&&nowurl[i]<='9') contestId+=nowurl[i];
+                else if(contestId) break;
+            }
+            let cid=Number(contestId);
+            let contest_search=document.createElement('div');
+            contest_search.innerHTML='<div class="contest-search-box-btlg"><input class="contest-search-input-btlg" type="text" placeholder="输入uid/用户名" name="search-user"><svg class="contest-search-icon-btlg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div><br>';
+            let contest_search_input = contest_search.querySelector('.contest-search-input-btlg');
+            let contest_search_icon = contest_search.querySelector('.contest-search-icon-btlg');
+
+            function displayUserInfoModal(userData, rank) {
+                let user = userData.user;
+                let score = userData.score;
+                let runningTime = userData.runningTime;
+                let details = userData.details;
+
+                let minutes = Math.floor(runningTime / 60000);
+                let seconds = Math.floor((runningTime % 60000) / 1000);
+                let timeStr = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+                let modal = document.createElement('div');
+                modal.className = 'custom-modal';
+                modal.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;border-radius:16px;box-shadow:0 20px 40px rgba(0,0,0,0.15);z-index:1000;width:500px;max-width:95vw;display:none;';
+
+                let modalContent = `<div style="padding:25px;text-align:center"><div style="margin-bottom:20px"><img src="${user.avatar}" style="width:80px;height:80px;border-radius:50%;border:3px solid ${lgColor(user.color)}"/></div><h3 style="margin:10px 0 5px;color:${lgColor(user.color)}">${user.name}</h3><p style="color:#718096;margin:5px 0">UID: ${user.uid}</p><p style="color:#667eea;margin:5px 0 20px">排名: ${rank}</p><div style="background:#f7fafc;border-radius:8px;padding:15px;margin:15px 0;"><div style="display:flex;justify-content:space-around;margin-bottom:10px;"><div style="text-align:center;"><div style="font-size:20px;font-weight:bold;color:#2d3748;">${score}</div><div style="font-size:12px;color:#718096;">总分</div></div><div style="text-align:center;"><div style="font-size:20px;font-weight:bold;color:#2d3748;">${timeStr}</div><div style="font-size:12px;color:#718096;">总用时</div></div></div></div>`;
+
+                if(Object.keys(details).length > 0) {
+                    modalContent += `<div style="text-align:left;margin-top:15px;"><h4 style="margin:0 0 10px;color:#2c3e50;font-size:14px;font-weight:600;">题目得分详情</h4><div style="max-height:200px;overflow-y:auto;font-size:13px;">`;
+
+                    let problemIds = Object.keys(details);
+
+                    problemIds.sort((a, b) => {
+                        let numA = parseInt(a.replace(/\D/g, '')) || 0;
+                        let numB = parseInt(b.replace(/\D/g, '')) || 0;
+                        return numA - numB;
+                    });
+                    for(let problemId of problemIds) {
+                        let problem = details[problemId];
+                        let problemTimeDisplay = '';
+                        if (problem.score > 0) {
+                            let problemTimeMinutes = Math.floor(problem.runningTime / 60000);
+                            let problemTimeSeconds = Math.floor((problem.runningTime % 60000) / 1000);
+                            problemTimeDisplay = `${problemTimeMinutes}:${problemTimeSeconds.toString().padStart(2, '0')}`;
+                        }
+                        modalContent += `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f1f3f4;"><span style="font-weight:500;">${problemId}</span><div style="display:flex;gap:15px;"><span style="color:${problem.score > 0 ? '#27ae60' : '#e74c3c'}">${problem.score}分</span><span style="color:#718096;">${problemTimeDisplay}</span></div></div>`;
+                    }
+
+                    modalContent += `</div></div>`;
+                }
+                modalContent += `<div style="display:flex;gap:10px;margin-top:25px;"><a href="https://www.luogu.com.cn/user/${user.uid}" target="_blank" style="flex:1;background:#667eea;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:500;text-decoration:none;text-align:center;">查看主页</a><button id="copyUserInfoBtn" style="flex:1;background:#edf2f7;color:#2d3748;border:1px solid #e2e8f0;padding:10px 20px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:500;">复制信息</button></div></div>`;
+                modal.innerHTML = modalContent;
+                document.body.appendChild(modal);
+
+                modal.style.display = 'block';
+                showMask();
+
+                document.getElementById('copyUserInfoBtn').addEventListener('click', function() {
+                    let userInfo = `用户: ${user.name} (UID: ${user.uid})\n排名: ${rank}\n总分: ${score}\n总用时: ${timeStr}`;
+
+                    if(Object.keys(details).length > 0) {
+                        userInfo += `\n\n题目得分:\n`;
+
+                        let problemIds = Object.keys(details);
+                        problemIds.sort((a, b) => {
+                            let numA = parseInt(a.replace(/\D/g, '')) || 0;
+                            let numB = parseInt(b.replace(/\D/g, '')) || 0;
+                            return numA - numB;
+                        });
+
+                        for(let problemId of problemIds) {
+                            let problem = details[problemId];
+                            let problemTimeDisplay = '';
+                            if (problem.score > 0) {
+                                let problemTimeMinutes = Math.floor(problem.runningTime / 60000);
+                                let problemTimeSeconds = Math.floor((problem.runningTime % 60000) / 1000);
+                                problemTimeDisplay = `${problemTimeMinutes}:${problemTimeSeconds.toString().padStart(2, '0')}`;
+                            }
+                            userInfo += `${problemId}: ${problem.score}分 (${problemTimeDisplay})\n`;
+                        }
+                    }
+
+                    GM_setClipboard(userInfo);
+                    swal({title: "Better Luogu!",
+                          text: "用户信息已复制到剪贴板",
+                          icon: "success",
+                          topLayer: true});
+                });
+                mask.addEventListener('click', function() {
+                    modal.style.display = 'none';
+                    hideMask();
+                    modal.remove();
+                });
+            }
+
+            function contestFindUser() {
+                let searchusr = contest_search_input.value.trim();
+                if(!searchusr) return;
+
+                let isUid = /^\d+$/.test(searchusr);
+                let searchValue = isUid ? Number(searchusr) : searchusr;
+                let searchFinished = false;
+
+                swal({ title: "Better Luogu!", text: "正在并发查找用户，请稍候...", icon: "info", buttons: false, closeOnClickOutside: false, closeOnEsc: false });
+
+                $.get(`https://www.luogu.com.cn/fe/api/contest/scoreboard/${cid}`, {}, function(firstRes) {
+                    let totalCount = firstRes.scoreboard.count;
+                    let perPage = firstRes.scoreboard.perPage || 50;
+                    let totalPages = Math.ceil(totalCount / perPage);
+
+                    let foundInFirstPage = findUserInPage(firstRes.scoreboard.result, searchValue, isUid);
+                    if(foundInFirstPage) {
+                        swal.close();
+                        displayUserInfoModal(foundInFirstPage.user, foundInFirstPage.index + 1);
+                        return;
+                    }
+
+                    let pagePromises = [];
+                    let concurrencyLimit = 5;
+                    let foundUserResult = null;
+
+                    function fetchPage(pageNum) {
+                        return $.get(`https://www.luogu.com.cn/fe/api/contest/scoreboard/${cid}?page=${pageNum}`, {});
+                    }
+
+                    async function batchFetchPages(startPage, batchSize) {
+                        for(let i = startPage; i <= totalPages && i < startPage + batchSize; i++) {
+                            if(searchFinished) return;
+                            pagePromises.push(
+                                fetchPage(i).then(function(pageRes) {
+                                    if(searchFinished) return;
+                                    let found = findUserInPage(pageRes.scoreboard.result, searchValue, isUid);
+                                    if(found && !searchFinished) {
+                                        searchFinished = true;
+                                        foundUserResult = {
+                                            user: found.user,
+                                            rank: (i - 1) * perPage + found.index + 1,
+                                            page: i
+                                        };
+                                    }
+                                })
+                            );
+                        }
+                        await Promise.allSettled(pagePromises);
+
+                        if(foundUserResult) {
+                            swal.close();
+                            displayUserInfoModal(foundUserResult.user, foundUserResult.rank);
+                            return true;
+                        }
+                        return false;
+                    }
+
+                    (async function parallelSearch() {
+                        for(let startPage = 2; startPage <= totalPages; startPage += concurrencyLimit) {
+                            if(searchFinished) break;
+                            let found = await batchFetchPages(startPage, concurrencyLimit);
+                            if(found) return;
+                        }
+
+                        if(!searchFinished) {
+                            swal.close();
+                            swal("Better Luogu!", "未找到该用户", "error");
+                        }
+                    })();
+                }).fail(function() {
+                    swal.close();
+                    swal("Better Luogu!", "获取比赛信息失败", "error");
+                });
+            }
+            function findUserInPage(users, searchValue, isUid) {
+                for(let i = 0; i < users.length; i++) {
+                    let user = users[i].user;
+                    if(isUid) {
+                        if(user.uid === searchValue) {
+                            return {user: users[i], index: i};
+                        }
+                    } else {
+                        if(user.name.toLowerCase().includes(searchValue.toLowerCase())) {
+                            return {user: users[i], index: i};
+                        }
+                    }
+                }
+                return null;
+            }
+
+            contest_search_input.addEventListener('keydown',function(e){
+                if(e.keyCode === 13 || e.which === 13) contestFindUser();
+            });
+            contest_search_icon.addEventListener('click', function(){contestFindUser();});
+
+            let flag=1;
+            setInterval(function(){
+                if(document.querySelector('#app > div.main-container > main > div > div.card.padding-none > div > ul > li:nth-child(3) > span').classList.contains('selected')){
+                    if(flag) document.querySelector('#app > div.main-container > main > div > div.card.padding-default > div').insertAdjacentElement('beforebegin', contest_search);
+                    flag=0;
+                }
+                else flag=1;
+            },1000);
         }
     }
 })();
