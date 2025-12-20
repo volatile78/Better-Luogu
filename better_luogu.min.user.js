@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Better Luogu!
 // @namespace    https://www.luogu.com.cn/user/772464
-// @version      1.13.4
+// @version      1.14
 // @description:zh  洛谷扩展
 // @description  Luogu Expansion
 // @author       volatile
@@ -22,10 +22,50 @@
 // @require      https://unpkg.com/sweetalert/dist/sweetalert.min.js
 // @require      https://code.jquery.com/jquery-3.6.0.min.js
 // @require      https://cdn.jsdelivr.net/npm/marked/marked.min.js
+// @require      https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/highlight.min.js
+// @require      https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/languages/cpp.min.js
+// @require      https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js
+// @require      https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js
 // @license      MIT
 // ==/UserScript==
 (function() {
     'use strict'
+    marked.setOptions({
+        highlight: function(code, lang) {
+            const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+            return hljs.highlight(code, { language }).value;
+        },
+        langPrefix: 'hljs language-'
+    });
+    const renderer = new marked.Renderer();
+    const originalCodeRenderer = renderer.code;
+    renderer.code = function(code, lang, escaped) {
+        const originalHtml = originalCodeRenderer.call(this, code, lang, escaped);
+        const temp = document.createElement('div');
+        temp.innerHTML = originalHtml;
+        let preElement, codeElement;
+        if (temp.firstElementChild.tagName === 'PRE') {
+            preElement = temp.firstElementChild;
+            codeElement = preElement.querySelector('code');
+        }
+        let languageClass = '';
+        if (codeElement && codeElement.className) {
+            const classMatch = codeElement.className.match(/language-(\w+)/);
+            if (classMatch) languageClass = `language-${classMatch[1]}`;
+        }
+        languageClass = languageClass || '';
+        preElement.setAttribute('data-v-6e0a2e13', '');
+        preElement.setAttribute('data-line', '');
+        preElement.className = `pre hide-numbers ${languageClass} line-numbers`;
+        preElement.setAttribute('tabindex', '0');
+        if (codeElement) {
+            codeElement.setAttribute('data-v-6e0a2e13', '');
+            const existingClasses = codeElement.className.split(' ').filter(cls =>cls && !cls.startsWith('language-')).join(' ');
+            codeElement.className = `${existingClasses} ${languageClass}`.trim();
+        }
+        return temp.innerHTML;
+    };
+    marked.setOptions({ renderer });
     class Review{
         constructor(id,uid,user,content,choose,time){
             this.id=id;
@@ -100,8 +140,8 @@
             if(cookiename === name) return cookievalue;
         }
         if(name == 'version'){
-            setcookie('version','1.13.4',114514,'/','luogu.com.cn',true);
-            return "1.13.4";
+            setcookie('version','1.14',114514,'/','luogu.com.cn',true);
+            return "1.14";
         }
         else if(name == 'update'){
             setcookie('update','true',114514,'/','luogu.com.cn',true);
@@ -157,11 +197,11 @@
         });
     }
     function update(){
-        swal("Better Luogu!","1.修复了一些 bug，加了一些样式\n2.用户主页源码复制\n3.国际站跳转链接改保存站");
+        swal("Better Luogu!","1.加回了badge自定义\n2.用户主页KaTeX渲染");
     }
-    if(getcookie('version')!='1.13.4'&&nowurl=='https://www.luogu.com.cn/'){
+    if(getcookie('version')!='1.14'&&nowurl=='https://www.luogu.com.cn/'){
         deletecookie('version');
-        setcookie('version','1.13.4',114514,'/','luogu.com.cn',true);
+        setcookie('version','1.14',114514,'/','luogu.com.cn',true);
         update();
     }
     function reallyDeleteChat(id){
@@ -184,9 +224,7 @@
 
     function deleteChat(uid){
         $.get('https://www.luogu.com.cn/api/chat/record?user='+uid,{},function(res){
-            for(let i=0;i<res['messages']['result'].length;i++){
-                reallyDeleteChat(res['messages']['result'][i].id);
-            }
+            for(let i=0;i<res['messages']['result'].length;i++) reallyDeleteChat(res['messages']['result'][i].id);
         });
     }
 
@@ -251,6 +289,91 @@
                     break;
             }
         });
+    }
+
+    function addBadge(){
+        let badgeSettings = GM_getValue('badge_settings');
+        if(badgeSettings.enabled){
+            let badge=document.createElement('span');
+            badge.className='btlg-badge';
+            badge.innerText=badgeSettings.text;
+            GM_addStyle(`.btlg-badge{${badgeSettings.css}}`);
+            let targetUsername = '';
+            let debounceTimer = null;
+            const PROCESSED_FLAG = 'data-btlg-processed';
+            function fetchUsername() {
+                const uid = getcookie('uid');
+                if (!uid) return;
+                $.get('https://www.luogu.com.cn/api/user/search?keyword=' + uid,{},function (res) {
+                    if (res && res.users && res.users.length > 0) {
+                        targetUsername = res.users[0].name;
+                        processTargetLinks();
+                    }
+                });
+            }
+            function isLinkTextValid(link) {
+                const linkText = link.textContent.trim();
+                if (link.children.length === 0) {
+                    return linkText === targetUsername;
+                }
+                if (link.children.length === 1 && link.children[0].tagName.toLowerCase() === 'span') {
+                    const spanText = link.children[0].textContent.trim();
+                    return spanText === targetUsername;
+                }
+                return false;
+            }
+            function processTargetLinks() {
+                if (!targetUsername) return;
+                let userLinks = document.querySelectorAll(`a[href="https://www.luogu.com.cn/user/${getcookie('uid')}"]:not([${PROCESSED_FLAG}])`);
+                if (userLinks.length === 0) {
+                    const allLinks = Array.from(document.querySelectorAll(`a:not([${PROCESSED_FLAG}])`));
+                    userLinks = allLinks.filter(link => {
+                        try {
+                            const absoluteHref = new URL(link.href, window.location.href).href;
+                            const linkText = link.textContent.trim();
+                            return (
+                                absoluteHref === 'https://www.luogu.com.cn/user/'+getcookie('uid') &&
+                                isLinkTextValid(link)
+                            );
+                        } catch (e) {
+                            return false;
+                        }
+                    });
+                } else {
+                    userLinks = Array.from(userLinks).filter(link => {
+                        const linkText = link.textContent.trim();
+                        return link.children.length === 0 && linkText === targetUsername;
+                    });
+                }
+
+                userLinks.forEach(link => {
+                    const parentTag = link.parentElement?.tagName.toLowerCase();
+                    if (parentTag === 'p') return;
+                    link.setAttribute(PROCESSED_FLAG, 'true');
+                    link.insertAdjacentElement('afterend', badge.cloneNode(true));
+                });
+            }
+            function debounceProcess() {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(processTargetLinks, 100);
+            }
+            fetchUsername();
+
+            const observer = new MutationObserver((mutations) => {
+                const hasUsefulNodes = mutations.some(mutation => Array.from(mutation.addedNodes).some(node => node.nodeType === 1));
+                if (hasUsefulNodes) debounceProcess();
+            });
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true,
+                attributes: false,
+                characterData: false
+            });
+            window.addEventListener('unload', () => {
+                clearTimeout(debounceTimer);
+                observer.disconnect();
+            });
+        }
     }
 
     function engine(){
@@ -569,6 +692,178 @@
             }
         });
     }
+    function badge() {
+        swal.close();
+        const existingModal = document.querySelector('.badge-settings-modal');
+        if (existingModal) existingModal.remove();
+        const defaultSettings = {
+            text: '请输入文本',
+            enabled: false,
+            css: `background: rgb(254,76,97);color: #fff;padding: 3px 9px;border-radius: 999px;font-size: 15px;line-height: 1.2;display: inline-block;white-space: nowrap;font-weight: bold;margin-left: 2px;`
+        };
+        let badgeSettings = GM_getValue('badge_settings', defaultSettings);
+        let badgeModal = document.createElement('div');
+        badgeModal.className = 'badge-settings-modal';
+        badgeModal.style.cssText = `position: fixed;top: 50%;left: 50%;transform: translate(-50%, -50%);background: white;border-radius: 16px;box-shadow: 0 20px 40px rgba(0,0,0,0.15);z-index: 1001;width: 600px;max-width: 90vw;padding: 25px;font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;display: none;`;
+        badgeModal.innerHTML = `<div style="margin-bottom: 20px;">
+            <h2 style="margin: 0 0 20px 0; color: #2c3e50; font-weight: 600;">Badge 设置</h2>
+            <div class="setting-group" style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #4a5568;">Badge 文字</label>
+                <input type="text" id="badge-text" value="${badgeSettings.text}"
+                       style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px;
+                              font-size: 14px; box-sizing: border-box;"
+                       placeholder="输入 badge 显示的文字">
+            </div>
+            <div class="setting-group" style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #4a5568;">CSS 样式</label>
+                <textarea id="badge-css" rows="6" spellcheck="false"
+                          style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px;
+                                 font-size: 12px; font-family: Consolas, Monaco, 'Courier New', monospace; box-sizing: border-box; resize: vertical;"
+                          placeholder="输入自定义 CSS 样式（支持 CSS 属性）">${badgeSettings.css.trim()}</textarea>
+                <div style="font-size: 12px; color: #718096; margin-top: 5px;">
+                    提示：可以使用标准的 CSS 属性，如 background, color, padding, border-radius 等
+                </div>
+            </div>
+            <div class="setting-group" style="margin-bottom: 25px;">
+                <label style="display: flex; align-items: center; cursor: pointer;">
+                    <input type="checkbox" id="badge-enabled" ${badgeSettings.enabled ? 'checked' : ''}
+                           style="margin-right: 8px; width: 16px; height: 16px;">
+                    <span style="font-weight: 500; color: #4a5568;">启用 Badge</span>
+                </label>
+            </div>
+            <div class="preview-section" style="margin-bottom: 25px;">
+                <h3 style="margin: 0 0 10px 0; font-size: 16px; color: #4a5568;">预览</h3>
+                <div style="background: #f7fafc; border-radius: 8px; padding: 15px;">
+                    <div class="preview-content" style="display: flex; align-items: center; gap: 8px;">
+                        <span id="badge-preview" class="badge-preview">${badgeSettings.text}</span>
+                    </div>
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: flex-end; border-top: 1px solid #eaeaea; padding-top: 20px;">
+                <button id="badge-reset" style="padding: 10px 20px; border: 1px solid #e2e8f0; border-radius: 8px;
+                       background: #f7fafc; color: #4a5568; font-weight: 500; cursor: pointer; transition: all 0.2s;">
+                    重置为默认
+                </button>
+                <button id="badge-cancel" style="padding: 10px 20px; border: 1px solid #e2e8f0; border-radius: 8px;
+                       background: #f7fafc; color: #4a5568; font-weight: 500; cursor: pointer; transition: all 0.2s;">
+                    取消
+                </button>
+                <button id="badge-save" style="padding: 10px 20px; border: none; border-radius: 8px;
+                       background: #3182ce; color: white; font-weight: 500; cursor: pointer; transition: all 0.2s;">
+                    保存设置
+                </button>
+            </div>
+        </div>`;//别他妈压行了
+
+        document.body.appendChild(badgeModal);
+        badgeModal.style.display = 'block';
+        showMask();
+        let previewTimeout;
+        let eventHandlers = {};
+        function updatePreview() {
+            const badgeTextInput = document.getElementById('badge-text');
+            const badgeCssInput = document.getElementById('badge-css');
+            const badgePreview = document.getElementById('badge-preview');
+            const text = badgeTextInput.value || badgeSettings.text;
+            const css = badgeCssInput.value || defaultSettings.css;
+            badgePreview.textContent = text;
+            badgePreview.style.cssText = css;
+            badgePreview.style.display = 'inline-block';
+            badgePreview.style.whiteSpace = 'nowrap';
+        }
+        function schedulePreviewUpdate() {
+            clearTimeout(previewTimeout);
+            previewTimeout = setTimeout(updatePreview, 200);
+        }
+        const badgeTextInput = document.getElementById('badge-text');
+        const badgeCssInput = document.getElementById('badge-css');
+        const badgeEnabledInput = document.getElementById('badge-enabled');
+
+        eventHandlers.textInput = () => schedulePreviewUpdate();
+        eventHandlers.cssInput = () => schedulePreviewUpdate();
+        eventHandlers.enabledChange = () => schedulePreviewUpdate();
+
+        badgeTextInput.addEventListener('input', eventHandlers.textInput);
+        badgeCssInput.addEventListener('input', eventHandlers.cssInput);
+        badgeEnabledInput.addEventListener('change', eventHandlers.enabledChange);
+
+        updatePreview();
+
+        const badgeSaveBtn = document.getElementById('badge-save');
+        eventHandlers.saveClick = function() {
+            const newSettings = {
+                text: badgeTextInput.value || defaultSettings.text,
+                css: badgeCssInput.value || defaultSettings.css,
+                enabled: badgeEnabledInput.checked
+            };
+
+            GM_setValue('badge_settings', newSettings);
+
+            swal({
+                title: "保存成功",
+                text: "Badge 设置已保存。刷新页面后生效。",
+                icon: "success",
+                buttons: {
+                    cancel: "稍后刷新",
+                    confirm: {
+                        text: "立即刷新",
+                        value: true
+                    }
+                }
+            }).then((value) => {
+                closeBadgeModal();
+                if (value) {
+                    location.reload();
+                }
+            });
+        };
+        badgeSaveBtn.addEventListener('click', eventHandlers.saveClick);
+
+        const badgeCancelBtn = document.getElementById('badge-cancel');
+        eventHandlers.cancelClick = function() { closeBadgeModal(); };
+        badgeCancelBtn.addEventListener('click', eventHandlers.cancelClick);
+
+        const badgeResetBtn = document.getElementById('badge-reset');
+        eventHandlers.resetClick = function() {
+            badgeTextInput.value = defaultSettings.text;
+            badgeCssInput.value = defaultSettings.css;
+            badgeEnabledInput.checked = defaultSettings.enabled;
+            updatePreview();
+
+            swal({
+                title: "已重置",
+                text: "设置已重置为默认值。",
+                icon: "info",
+                timer: 1500,
+                buttons: false
+            });
+        };
+        badgeResetBtn.addEventListener('click', eventHandlers.resetClick);
+
+        eventHandlers.escKey = function(event) {
+            if (event.key === 'Escape') closeBadgeModal();
+        };
+        document.addEventListener('keydown', eventHandlers.escKey);
+
+        eventHandlers.maskClick = function() { closeBadgeModal(); };
+        mask.addEventListener('click', eventHandlers.maskClick);
+
+        function closeBadgeModal() {
+            badgeTextInput.removeEventListener('input', eventHandlers.textInput);
+            badgeCssInput.removeEventListener('input', eventHandlers.cssInput);
+            badgeEnabledInput.removeEventListener('change', eventHandlers.enabledChange);
+            badgeSaveBtn.removeEventListener('click', eventHandlers.saveClick);
+            badgeCancelBtn.removeEventListener('click', eventHandlers.cancelClick);
+            badgeResetBtn.removeEventListener('click', eventHandlers.resetClick);
+            document.removeEventListener('keydown', eventHandlers.escKey);
+            mask.removeEventListener('click', eventHandlers.maskClick);
+
+            clearTimeout(previewTimeout);
+            badgeModal.style.display = 'none';
+            badgeModal.remove();
+            hideMask();
+        }
+    }
     window.onload=function(){
         checkNotice();
         let button = document.createElement("a");
@@ -600,6 +895,10 @@
                             text: "缺省源",
                             value: "code"
                         },
+                        badge: {
+                            text: "badge",
+                            value: "badge"
+                        },
                         not: {
                             text: "千万别点!!!",
                             value: "not"
@@ -619,6 +918,9 @@
                         case "code":
                             code();
                             break;
+                        case "badge":
+                            badge();
+                            break;
                         case "not": not();
                     }
                 });
@@ -626,7 +928,7 @@
         }
         else if(!nowurl.includes('https://www.luogu.com.cn/ticket')){
             let usernav=document.getElementsByClassName('nav-search')[0];
-            if(usernav==null) usernav=document.querySelector('#app > div.main-container > div.wrapper.wrapped.lfe-body.header-layout.normal > div.header > div.user-nav > nav > div:nth-child(1)');
+            if(usernav==null) usernav=document.querySelector('#app > div.main-container > div.wrapper.wrapped.lfe-body.header-layout.narrow > div.header > div.user-nav > nav > div:nth-child(1)');
             usernav.insertAdjacentElement('beforebegin', button);
             const tb = document.getElementById("NLTB");
 
@@ -642,11 +944,12 @@
         let nowuid=getcookie('uid');
 
         if(nowurl == 'https://www.luogu.com.cn/'){
-            let uu=document.querySelector('#app > div.main-container > div.wrapper.wrapped.lfe-body.header-layout.tiny > div.container > nav > span > span > a').href;
+            let uu=document.querySelector('#app-old > div.lg-index-content.am-center > div:nth-child(1) > div > div > div > div > h2 > a').href;
             let uuid='';
             for(let i=0;i<uu.length;i++){
                 if(uu[i]>='0'&&uu[i]<='9') uuid+=uu[i];
             }
+            console.log(uuid);
             if(uuid!='0') setcookie('uid',uuid,114514,'/','luogu.com.cn',true);
             $('input[name="user"]').keydown(function(e){
                 if(e.which===13){
@@ -997,7 +1300,20 @@
                     let main=document.querySelector('#app > div.main-container.lside-nav > main > div > div.l-card > div.user-header-bottom > div.menu > ul > li:nth-child(1) > span');
                     setInterval(function(){
                         if(main.classList.contains('selected')){
-                            if(flag) document.querySelector('#app > div.main-container.lside-nav > main > div > div.sidebar-container.reverse > div.main > div:nth-child(1)').insertAdjacentElement('beforebegin', jsCard);
+                            if(flag){
+                                document.querySelector('#app > div.main-container.lside-nav > main > div > div.sidebar-container.reverse > div.main > div:nth-child(1)').insertAdjacentElement('beforebegin', jsCard);
+                                if (typeof katex !== 'undefined') {
+                                    renderMathInElement(document.body, {
+                                        delimiters: [
+                                            {left: "$$", right: "$$", display: true},
+                                            {left: "$", right: "$", display: false},
+                                            {left: "\\(", right: "\\)", display: false},
+                                            {left: "\\[", right: "\\]", display: true}
+                                        ],
+                                        throwOnError: false
+                                    });
+                                }
+                            }
                             flag=0;
                             let copyit=document.querySelector('#app > div.main-container.lside-nav > main > div > div.sidebar-container.reverse > div.main > div:nth-child(1) > div.header > span > button');
                             copyit.addEventListener('click',function(){GM_setClipboard(it);swal({title: "Better Luogu!",text: "用户信息已复制到剪贴板",icon: "success",topLayer: true});});
@@ -1249,6 +1565,7 @@
                 userCard.appendChild(f);
             });
         }
+        if(!nowurl.includes('https://www.luogu.com.cn/ticket')) addBadge();
     }
     let jumpFlag=1;
     setInterval(function(){
