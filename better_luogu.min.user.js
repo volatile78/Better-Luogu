@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Better Luogu!
 // @namespace    https://www.luogu.com.cn/user/772464
-// @version      1.14
+// @version      1.14.1
 // @description:zh  洛谷扩展
 // @description  Luogu Expansion
 // @author       volatile
@@ -21,11 +21,10 @@
 // @connect      greasyfork.org
 // @require      https://unpkg.com/sweetalert/dist/sweetalert.min.js
 // @require      https://code.jquery.com/jquery-3.6.0.min.js
-// @require      https://cdn.jsdelivr.net/npm/marked/marked.min.js
-// @require      https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/highlight.min.js
-// @require      https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/languages/cpp.min.js
-// @require      https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js
-// @require      https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js
+// @require      https://cdn.jsdmirror.com/gh/highlightjs/cdn-release/build/highlight.min.js
+// @require      https://cdn.jsdmirror.com/npm/marked@4.0.0/marked.min.js
+// @require      https://cdn.jsdmirror.com/npm/katex@0.16.9/dist/katex.min.js
+// @require      https://cdn.jsdmirror.com/npm/katex@0.16.9/dist/contrib/auto-render.min.js
 // @license      MIT
 // ==/UserScript==
 (function() {
@@ -140,8 +139,8 @@
             if(cookiename === name) return cookievalue;
         }
         if(name == 'version'){
-            setcookie('version','1.14',114514,'/','luogu.com.cn',true);
-            return "1.14";
+            setcookie('version','1.14.1',114514,'/','luogu.com.cn',true);
+            return "1.14.1";
         }
         else if(name == 'update'){
             setcookie('update','true',114514,'/','luogu.com.cn',true);
@@ -197,11 +196,11 @@
         });
     }
     function update(){
-        swal("Better Luogu!","1.加回了badge自定义\n2.用户主页KaTeX渲染");
+        swal("Better Luogu!","修复了一些bug");
     }
-    if(getcookie('version')!='1.14'&&nowurl=='https://www.luogu.com.cn/'){
+    if(getcookie('version')!='1.14.1'&&nowurl=='https://www.luogu.com.cn/'){
         deletecookie('version');
-        setcookie('version','1.14',114514,'/','luogu.com.cn',true);
+        setcookie('version','1.14.1',114514,'/','luogu.com.cn',true);
         update();
     }
     function reallyDeleteChat(id){
@@ -928,7 +927,7 @@
         }
         else if(!nowurl.includes('https://www.luogu.com.cn/ticket')){
             let usernav=document.getElementsByClassName('nav-search')[0];
-            if(usernav==null) usernav=document.querySelector('#app > div.main-container > div.wrapper.wrapped.lfe-body.header-layout.narrow > div.header > div.user-nav > nav > div:nth-child(1)');
+            if(usernav==null) usernav=document.querySelector('#app > div.main-container > div.wrapper.wrapped.lfe-body.header-layout.normal > div.header > div.user-nav > nav > div:nth-child(1)');
             usernav.insertAdjacentElement('beforebegin', button);
             const tb = document.getElementById("NLTB");
 
@@ -1291,7 +1290,7 @@
                     let it=res['user'].introduction;
                     let introduction=marked.parse(it);
                     let jsCard=document.createElement('div');
-                    jsCard.setAttribute('data-v-b62e56e7','');
+                    jsCard.setAttribute('data-v-c3407962','');
                     jsCard.setAttribute('data-v-f4fefeb2','');
                     jsCard.setAttribute('data-v-754e1ea4-s','');
                     jsCard.className='l-card';
