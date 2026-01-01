@@ -230,66 +230,6 @@
     function reloadmenu(){
         swal("Better Luogu!","更改成功","success",{button: "刷新"}).then((value) => {location.reload();});
     }
-    function not1(){
-        let words = ["78;101;118;101;114;32;103;111;110;110;97;32;103;105;118;101;32;121;111;117;32;117;112;","99;110;109;","83;66;","73;65;75;73;79;73;","49;49;52;53;49;52;","49;57;49;57;56;49;48;","115;116;111;","111;114;122;"];
-        let cishu = Math.floor(Math.random()*10)+1;
-        for(let i=1;i<=cishu;i++){
-            let qwq = words[Math.floor(Math.random()*words.length)];
-            let awa="";
-            let t=0;
-            for(let j=0;j<qwq.length;j++){
-                if(qwq[j]!=';'){
-                    t*=10;
-                    t+=parseInt(qwq[j]);
-                }
-                else{
-                    awa+=String.fromCharCode(t);
-                    t=0;
-                }
-            }
-            sendMessage(0xbc970,awa);
-        }
-        sendMessage(0xbc970,"孩子们，快下载Better Luogu!吧！");
-        swal("Better Luogu!","好像有点问题?!","error",{button: "前往私信"}).then((value) => {window.open('https://www.luogu.com.cn/chat?uid=772464','_self');});
-    }
-
-    function not2(){
-        sendBenBen("这个人AKIOI");
-        sendBenBen("Better Luogu!真好用");
-        let benben=document.querySelector('#app-old > div.lg-index-content.am-center > div:nth-child(1) > div > div > div > div.am-u-md-4.lg-punch.am-text-center > h2 > a.lg-fg-red.lg-bold').href.toString();
-        benben+='/activity';
-        swal("Better Luogu!","好像有点问题?!","error",{button: "前往动态"}).then((value) => {window.open(benben,'_self');});
-    }
-
-    function not(){
-        swal.close();
-        swalcss.remove();
-        swalcss.innerHTML=".swal-overlay {background-color: rgba(231, 76, 60, 0.5);} .swal-button {background-color: #E74C3C;}";
-        document.head.appendChild(swalcss);
-        swal("Better Luogu!","不怕死就选择一个", {
-            buttons: {
-                not1: {
-                    text: "1",
-                    value: "not1"
-                },
-                not2: {
-                    text: "2",
-                    value: "not2"
-                }
-            },
-        })
-            .then((value) => {
-            switch (value){
-                case "not1":
-                    not1();
-                    break;
-                case "not2":
-                    not2();
-                    break;
-            }
-        });
-    }
-
     function addBadge(){
         let badgeSettings = GM_getValue('badge_settings');
         if(badgeSettings.enabled){
@@ -704,55 +644,7 @@
         let badgeModal = document.createElement('div');
         badgeModal.className = 'badge-settings-modal';
         badgeModal.style.cssText = `position: fixed;top: 50%;left: 50%;transform: translate(-50%, -50%);background: white;border-radius: 16px;box-shadow: 0 20px 40px rgba(0,0,0,0.15);z-index: 1001;width: 600px;max-width: 90vw;padding: 25px;font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;display: none;`;
-        badgeModal.innerHTML = `<div style="margin-bottom: 20px;">
-            <h2 style="margin: 0 0 20px 0; color: #2c3e50; font-weight: 600;">Badge 设置</h2>
-            <div class="setting-group" style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #4a5568;">Badge 文字</label>
-                <input type="text" id="badge-text" value="${badgeSettings.text}"
-                       style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px;
-                              font-size: 14px; box-sizing: border-box;"
-                       placeholder="输入 badge 显示的文字">
-            </div>
-            <div class="setting-group" style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #4a5568;">CSS 样式</label>
-                <textarea id="badge-css" rows="6" spellcheck="false"
-                          style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px;
-                                 font-size: 12px; font-family: Consolas, Monaco, 'Courier New', monospace; box-sizing: border-box; resize: vertical;"
-                          placeholder="输入自定义 CSS 样式（支持 CSS 属性）">${badgeSettings.css.trim()}</textarea>
-                <div style="font-size: 12px; color: #718096; margin-top: 5px;">
-                    提示：可以使用标准的 CSS 属性，如 background, color, padding, border-radius 等
-                </div>
-            </div>
-            <div class="setting-group" style="margin-bottom: 25px;">
-                <label style="display: flex; align-items: center; cursor: pointer;">
-                    <input type="checkbox" id="badge-enabled" ${badgeSettings.enabled ? 'checked' : ''}
-                           style="margin-right: 8px; width: 16px; height: 16px;">
-                    <span style="font-weight: 500; color: #4a5568;">启用 Badge</span>
-                </label>
-            </div>
-            <div class="preview-section" style="margin-bottom: 25px;">
-                <h3 style="margin: 0 0 10px 0; font-size: 16px; color: #4a5568;">预览</h3>
-                <div style="background: #f7fafc; border-radius: 8px; padding: 15px;">
-                    <div class="preview-content" style="display: flex; align-items: center; gap: 8px;">
-                        <span id="badge-preview" class="badge-preview">${badgeSettings.text}</span>
-                    </div>
-                </div>
-            </div>
-            <div style="display: flex; gap: 10px; justify-content: flex-end; border-top: 1px solid #eaeaea; padding-top: 20px;">
-                <button id="badge-reset" style="padding: 10px 20px; border: 1px solid #e2e8f0; border-radius: 8px;
-                       background: #f7fafc; color: #4a5568; font-weight: 500; cursor: pointer; transition: all 0.2s;">
-                    重置为默认
-                </button>
-                <button id="badge-cancel" style="padding: 10px 20px; border: 1px solid #e2e8f0; border-radius: 8px;
-                       background: #f7fafc; color: #4a5568; font-weight: 500; cursor: pointer; transition: all 0.2s;">
-                    取消
-                </button>
-                <button id="badge-save" style="padding: 10px 20px; border: none; border-radius: 8px;
-                       background: #3182ce; color: white; font-weight: 500; cursor: pointer; transition: all 0.2s;">
-                    保存设置
-                </button>
-            </div>
-        </div>`;//别他妈压行了
+        badgeModal.innerHTML = `<div style="margin-bottom:20px"><h2 style="margin:0 0 20px 0;color:#2c3e50;font-weight:600">Badge 设置</h2><div class="setting-group" style="margin-bottom:20px"><label style="display:block;margin-bottom:8px;font-weight:500;color:#4a5568">Badge 文字</label><input type="text" id="badge-text" value="${badgeSettings.text}" style="width:100%;padding:10px;border:1px solid #e2e8f0;border-radius:8px;font-size:14px;box-sizing:border-box" placeholder="输入 badge 显示的文字"></div><div class="setting-group" style="margin-bottom:20px"><label style="display:block;margin-bottom:8px;font-weight:500;color:#4a5568">CSS 样式</label><textarea id="badge-css" rows="6" spellcheck="false" style="width:100%;padding:10px;border:1px solid #e2e8f0;border-radius:8px;font-size:12px;font-family:Consolas, Monaco, 'Courier New', monospace;box-sizing:border-box;resize:vertical" placeholder="输入自定义 CSS 样式（支持 CSS 属性）">${badgeSettings.css.trim()}</textarea><div style="font-size:12px;color:#718096;margin-top:5px">提示：可以使用标准的 CSS 属性，如 background, color, padding, border-radius 等，<a href="https://www.luogu.me/paste/yboy8d6i">颜色对照表</a></div></div><div class="setting-group" style="margin-bottom:25px"><label style="display:flex;align-items:center;cursor:pointer"><input type="checkbox" id="badge-enabled" ${badgeSettings.enabled ? 'checked' : ''} style="margin-right:8px;width:16px;height:16px"><span style="font-weight:500;color:#4a5568">启用 Badge</span></label></div><div class="preview-section" style="margin-bottom:25px"><h3 style="margin:0 0 10px 0;font-size:16px;color:#4a5568">预览</h3><div style="background:#f7fafc;border-radius:8px;padding:15px"><div class="preview-content" style="display:flex;align-items:center;gap:8px"><span id="badge-preview" class="badge-preview">${badgeSettings.text}</span></div></div></div><div style="display:flex;gap:10px;justify-content:flex-end;border-top:1px solid #eaeaea;padding-top:20px"><button id="badge-reset" style="padding:10px 20px;border:1px solid #e2e8f0;border-radius:8px;background:#f7fafc;color:#4a5568;font-weight:500;cursor:pointer;transition:all 0.2s">重置为默认</button><button id="badge-cancel" style="padding:10px 20px;border:1px solid #e2e8f0;border-radius:8px;background:#f7fafc;color:#4a5568;font-weight:500;cursor:pointer;transition:all 0.2s">取消</button><button id="badge-save" style="padding:10px 20px;border:none;border-radius:8px;background:#3182ce;color:white;font-weight:500;cursor:pointer;transition:all 0.2s">保存设置</button></div></div>`;
 
         document.body.appendChild(badgeModal);
         badgeModal.style.display = 'block';
@@ -897,10 +789,6 @@
                         badge: {
                             text: "badge",
                             value: "badge"
-                        },
-                        not: {
-                            text: "千万别点!!!",
-                            value: "not"
                         }
                     },
                 }).then((value) => {
@@ -920,7 +808,6 @@
                         case "badge":
                             badge();
                             break;
-                        case "not": not();
                     }
                 });
             });
@@ -1526,18 +1413,21 @@
         }
         let userCard=document.querySelector('.header[data-v-1a591deb]');
         if(userCard!=null){
-            $.get('https://www.luogu.com.cn/api/user/info/'+useruid,{},function(res){
+            $.get('https://www.luogu.com.cn/api/user/info/' + useruid, {}, function(res) {
                 let follow = res['user'].followingCount || 0;
                 let fans = res['user'].followerCount || 0;
                 let ccfLevel = res['user']['rating']?.['user']?.ccfLevel || '未评级';
                 let ranking = res['user'].ranking || '未上榜';
                 let ccf = 'CCF 评级：' + ccfLevel;
                 let rankingText = '咕值排行：' + ranking;
+
                 const cr = document.createElement('span');
                 cr.className = 'ccf-info';
                 cr.textContent = `${ccf}|${rankingText}`;
+
                 const f = document.createElement('div');
                 f.className = 'follow-fans-info';
+
                 const fl = document.createElement('a');
                 fl.href = 'https://www.luogu.com.cn/user/' + useruid + '/following';
                 const flLabel = document.createElement('span');
@@ -1548,6 +1438,7 @@
                 flNum.textContent = follow;
                 fl.appendChild(flNum);
                 fl.appendChild(flLabel);
+
                 const fs = document.createElement('a');
                 fs.href = 'https://www.luogu.com.cn/user/' + useruid + '/follower';
                 const fsLabel = document.createElement('span');
@@ -1558,10 +1449,30 @@
                 fsNum.textContent = fans;
                 fs.appendChild(fsNum);
                 fs.appendChild(fsLabel);
+
+                const fd = document.createElement('a');
+                fd.href = 'https://www.luogu.com.cn/user/' + useruid + '/activity';
+                const fdLabel = document.createElement('span');
+                fdLabel.className = 'label';
+                fdLabel.textContent = '动态';
+                const fdNum = document.createElement('span');
+                fdNum.className = 'num';
+                fdNum.textContent = '加载中...';
+                fd.appendChild(fdNum);
+                fd.appendChild(fdLabel);
+
                 f.appendChild(fl);
                 f.appendChild(fs);
+                f.appendChild(fd);
                 userCard.appendChild(cr);
                 userCard.appendChild(f);
+
+                $.get('https://www.luogu.com.cn/api/feed/list?user=' + useruid, {}, function(feedRes) {
+                    let feedCount = feedRes['feeds']?.count || 0;
+                    fdNum.textContent = feedCount;
+                }).fail(function() {
+                    fdNum.textContent = 'null';
+                });
             });
         }
         if(!nowurl.includes('https://www.luogu.com.cn/ticket')) addBadge();
