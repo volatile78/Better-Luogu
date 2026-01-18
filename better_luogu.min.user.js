@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Better Luogu!
 // @namespace    https://www.luogu.com.cn/user/772464
-// @version      1.14.1
+// @version      1.14.2
 // @description:zh  洛谷扩展
 // @description  Luogu Expansion
 // @author       volatile
@@ -139,8 +139,8 @@
             if(cookiename === name) return cookievalue;
         }
         if(name == 'version'){
-            setcookie('version','1.14.1',114514,'/','luogu.com.cn',true);
-            return "1.14.1";
+            setcookie('version','1.14.2',114514,'/','luogu.com.cn',true);
+            return "1.14.2";
         }
         else if(name == 'update'){
             setcookie('update','true',114514,'/','luogu.com.cn',true);
@@ -198,9 +198,9 @@
     function update(){
         swal("Better Luogu!","修复了一些bug");
     }
-    if(getcookie('version')!='1.14.1'&&nowurl=='https://www.luogu.com.cn/'){
+    if(getcookie('version')!='1.14.2'&&nowurl=='https://www.luogu.com.cn/'){
         deletecookie('version');
-        setcookie('version','1.14.1',114514,'/','luogu.com.cn',true);
+        setcookie('version','1.14.2',114514,'/','luogu.com.cn',true);
         update();
     }
     function reallyDeleteChat(id){
@@ -231,7 +231,11 @@
         swal("Better Luogu!","更改成功","success",{button: "刷新"}).then((value) => {location.reload();});
     }
     function addBadge(){
-        let badgeSettings = GM_getValue('badge_settings');
+        let badgeSettings = GM_getValue('badge_settings', {
+            text: '请输入文本',
+            enabled: false,
+            css: `background: rgb(254,76,97);color: #fff;padding: 3px 9px;border-radius: 999px;font-size: 15px;line-height: 1.2;display: inline-block;white-space: nowrap;font-weight: bold;margin-left: 2px;`
+        });
         if(badgeSettings.enabled){
             let badge=document.createElement('span');
             badge.className='btlg-badge';
@@ -644,7 +648,55 @@
         let badgeModal = document.createElement('div');
         badgeModal.className = 'badge-settings-modal';
         badgeModal.style.cssText = `position: fixed;top: 50%;left: 50%;transform: translate(-50%, -50%);background: white;border-radius: 16px;box-shadow: 0 20px 40px rgba(0,0,0,0.15);z-index: 1001;width: 600px;max-width: 90vw;padding: 25px;font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;display: none;`;
-        badgeModal.innerHTML = `<div style="margin-bottom:20px"><h2 style="margin:0 0 20px 0;color:#2c3e50;font-weight:600">Badge 设置</h2><div class="setting-group" style="margin-bottom:20px"><label style="display:block;margin-bottom:8px;font-weight:500;color:#4a5568">Badge 文字</label><input type="text" id="badge-text" value="${badgeSettings.text}" style="width:100%;padding:10px;border:1px solid #e2e8f0;border-radius:8px;font-size:14px;box-sizing:border-box" placeholder="输入 badge 显示的文字"></div><div class="setting-group" style="margin-bottom:20px"><label style="display:block;margin-bottom:8px;font-weight:500;color:#4a5568">CSS 样式</label><textarea id="badge-css" rows="6" spellcheck="false" style="width:100%;padding:10px;border:1px solid #e2e8f0;border-radius:8px;font-size:12px;font-family:Consolas, Monaco, 'Courier New', monospace;box-sizing:border-box;resize:vertical" placeholder="输入自定义 CSS 样式（支持 CSS 属性）">${badgeSettings.css.trim()}</textarea><div style="font-size:12px;color:#718096;margin-top:5px">提示：可以使用标准的 CSS 属性，如 background, color, padding, border-radius 等，<a href="https://www.luogu.me/paste/yboy8d6i">颜色对照表</a></div></div><div class="setting-group" style="margin-bottom:25px"><label style="display:flex;align-items:center;cursor:pointer"><input type="checkbox" id="badge-enabled" ${badgeSettings.enabled ? 'checked' : ''} style="margin-right:8px;width:16px;height:16px"><span style="font-weight:500;color:#4a5568">启用 Badge</span></label></div><div class="preview-section" style="margin-bottom:25px"><h3 style="margin:0 0 10px 0;font-size:16px;color:#4a5568">预览</h3><div style="background:#f7fafc;border-radius:8px;padding:15px"><div class="preview-content" style="display:flex;align-items:center;gap:8px"><span id="badge-preview" class="badge-preview">${badgeSettings.text}</span></div></div></div><div style="display:flex;gap:10px;justify-content:flex-end;border-top:1px solid #eaeaea;padding-top:20px"><button id="badge-reset" style="padding:10px 20px;border:1px solid #e2e8f0;border-radius:8px;background:#f7fafc;color:#4a5568;font-weight:500;cursor:pointer;transition:all 0.2s">重置为默认</button><button id="badge-cancel" style="padding:10px 20px;border:1px solid #e2e8f0;border-radius:8px;background:#f7fafc;color:#4a5568;font-weight:500;cursor:pointer;transition:all 0.2s">取消</button><button id="badge-save" style="padding:10px 20px;border:none;border-radius:8px;background:#3182ce;color:white;font-weight:500;cursor:pointer;transition:all 0.2s">保存设置</button></div></div>`;
+        badgeModal.innerHTML = `<div style="margin-bottom: 20px;">
+            <h2 style="margin: 0 0 20px 0; color: #2c3e50; font-weight: 600;">Badge 设置</h2>
+            <div class="setting-group" style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #4a5568;">Badge 文字</label>
+                <input type="text" id="badge-text" value="${badgeSettings.text}"
+                       style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px;
+                              font-size: 14px; box-sizing: border-box;"
+                       placeholder="输入 badge 显示的文字">
+            </div>
+            <div class="setting-group" style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #4a5568;">CSS 样式</label>
+                <textarea id="badge-css" rows="6" spellcheck="false"
+                          style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px;
+                                 font-size: 12px; font-family: Consolas, Monaco, 'Courier New', monospace; box-sizing: border-box; resize: vertical;"
+                          placeholder="输入自定义 CSS 样式（支持 CSS 属性）">${badgeSettings.css.trim()}</textarea>
+                <div style="font-size: 12px; color: #718096; margin-top: 5px;">
+                    提示：可以使用标准的 CSS 属性，如 background, color, padding, border-radius 等，<a href="https://www.luogu.me/paste/yboy8d6i">洛谷颜色对照表</a>
+                </div>
+            </div>
+            <div class="setting-group" style="margin-bottom: 25px;">
+                <label style="display: flex; align-items: center; cursor: pointer;">
+                    <input type="checkbox" id="badge-enabled" ${badgeSettings.enabled ? 'checked' : ''}
+                           style="margin-right: 8px; width: 16px; height: 16px;">
+                    <span style="font-weight: 500; color: #4a5568;">启用 Badge</span>
+                </label>
+            </div>
+            <div class="preview-section" style="margin-bottom: 25px;">
+                <h3 style="margin: 0 0 10px 0; font-size: 16px; color: #4a5568;">预览</h3>
+                <div style="background: #f7fafc; border-radius: 8px; padding: 15px;">
+                    <div class="preview-content" style="display: flex; align-items: center; gap: 8px;">
+                        <span id="badge-preview" class="badge-preview">${badgeSettings.text}</span>
+                    </div>
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: flex-end; border-top: 1px solid #eaeaea; padding-top: 20px;">
+                <button id="badge-reset" style="padding: 10px 20px; border: 1px solid #e2e8f0; border-radius: 8px;
+                       background: #f7fafc; color: #4a5568; font-weight: 500; cursor: pointer; transition: all 0.2s;">
+                    重置为默认
+                </button>
+                <button id="badge-cancel" style="padding: 10px 20px; border: 1px solid #e2e8f0; border-radius: 8px;
+                       background: #f7fafc; color: #4a5568; font-weight: 500; cursor: pointer; transition: all 0.2s;">
+                    取消
+                </button>
+                <button id="badge-save" style="padding: 10px 20px; border: none; border-radius: 8px;
+                       background: #3182ce; color: white; font-weight: 500; cursor: pointer; transition: all 0.2s;">
+                    保存设置
+                </button>
+            </div>
+        </div>`;
 
         document.body.appendChild(badgeModal);
         badgeModal.style.display = 'block';
@@ -808,6 +860,7 @@
                         case "badge":
                             badge();
                             break;
+                        case "not": not();
                     }
                 });
             });
@@ -835,7 +888,6 @@
             for(let i=0;i<uu.length;i++){
                 if(uu[i]>='0'&&uu[i]<='9') uuid+=uu[i];
             }
-            console.log(uuid);
             if(uuid!='0') setcookie('uid',uuid,114514,'/','luogu.com.cn',true);
             $('input[name="user"]').keydown(function(e){
                 if(e.which===13){
@@ -1183,11 +1235,11 @@
                     jsCard.className='l-card';
                     jsCard.innerHTML=`<div data-v-f4fefeb2="" class="header"><h3 data-v-f4fefeb2="" style="margin: 0px;">个人介绍（仅Better Luogu!可见）</h3><span data-v-f4fefeb2="" class="edit-button"><!----><button data-v-505b6a97="" data-v-f4fefeb2="" class="lform-size-small" type="button">复制<!----></button></span></div><br><div data-v-f4fefeb2="" class="lfe-marked-wrap introduction">${introduction}<div class="lfe-marked"></div></div>`;
                     let flag=1;
-                    let main=document.querySelector('#app > div.main-container.lside-nav > main > div > div.l-card > div.user-header-bottom > div.menu > ul > li:nth-child(1) > span');
+                    let main=document.querySelector('#app > div.main-container > main > div > div.l-card > div.user-header-bottom > div.menu > ul > li:nth-child(1) > span');
                     setInterval(function(){
                         if(main.classList.contains('selected')){
                             if(flag){
-                                document.querySelector('#app > div.main-container.lside-nav > main > div > div.sidebar-container.reverse > div.main > div:nth-child(1)').insertAdjacentElement('beforebegin', jsCard);
+                                document.querySelector('#app > div.main-container > main > div > div.sidebar-container.reverse > div.main > div:nth-child(1)').insertAdjacentElement('beforebegin', jsCard);
                                 if (typeof katex !== 'undefined') {
                                     renderMathInElement(document.body, {
                                         delimiters: [
@@ -1201,7 +1253,7 @@
                                 }
                             }
                             flag=0;
-                            let copyit=document.querySelector('#app > div.main-container.lside-nav > main > div > div.sidebar-container.reverse > div.main > div:nth-child(1) > div.header > span > button');
+                            let copyit=document.querySelector('#app > div.main-container > main > div > div.sidebar-container.reverse > div.main > div:nth-child(1) > div.header > span > button');
                             copyit.addEventListener('click',function(){GM_setClipboard(it);swal({title: "Better Luogu!",text: "用户信息已复制到剪贴板",icon: "success",topLayer: true});});
                         }
                         else flag=1;
@@ -1413,21 +1465,18 @@
         }
         let userCard=document.querySelector('.header[data-v-1a591deb]');
         if(userCard!=null){
-            $.get('https://www.luogu.com.cn/api/user/info/' + useruid, {}, function(res) {
+            $.get('https://www.luogu.com.cn/api/user/info/'+useruid,{},function(res){
                 let follow = res['user'].followingCount || 0;
                 let fans = res['user'].followerCount || 0;
                 let ccfLevel = res['user']['rating']?.['user']?.ccfLevel || '未评级';
                 let ranking = res['user'].ranking || '未上榜';
                 let ccf = 'CCF 评级：' + ccfLevel;
                 let rankingText = '咕值排行：' + ranking;
-
                 const cr = document.createElement('span');
                 cr.className = 'ccf-info';
                 cr.textContent = `${ccf}|${rankingText}`;
-
                 const f = document.createElement('div');
                 f.className = 'follow-fans-info';
-
                 const fl = document.createElement('a');
                 fl.href = 'https://www.luogu.com.cn/user/' + useruid + '/following';
                 const flLabel = document.createElement('span');
@@ -1438,7 +1487,6 @@
                 flNum.textContent = follow;
                 fl.appendChild(flNum);
                 fl.appendChild(flLabel);
-
                 const fs = document.createElement('a');
                 fs.href = 'https://www.luogu.com.cn/user/' + useruid + '/follower';
                 const fsLabel = document.createElement('span');
@@ -1449,31 +1497,26 @@
                 fsNum.textContent = fans;
                 fs.appendChild(fsNum);
                 fs.appendChild(fsLabel);
-
-                const fd = document.createElement('a');
-                fd.href = 'https://www.luogu.com.cn/user/' + useruid + '/activity';
-                const fdLabel = document.createElement('span');
-                fdLabel.className = 'label';
-                fdLabel.textContent = '动态';
-                const fdNum = document.createElement('span');
-                fdNum.className = 'num';
-                fdNum.textContent = '加载中...';
-                fd.appendChild(fdNum);
-                fd.appendChild(fdLabel);
-
                 f.appendChild(fl);
                 f.appendChild(fs);
-                f.appendChild(fd);
                 userCard.appendChild(cr);
                 userCard.appendChild(f);
-
-                $.get('https://www.luogu.com.cn/api/feed/list?user=' + useruid, {}, function(feedRes) {
-                    let feedCount = feedRes['feeds']?.count || 0;
-                    fdNum.textContent = feedCount;
-                }).fail(function() {
-                    fdNum.textContent = 'null';
-                });
             });
+        }
+        if(nowurl.includes('https://www.luogu.com.cn/discuss/')){
+            let d='';
+            for(let i=0;i<nowurl.length;i++){
+                if(nowurl[i]>='0'&&nowurl[i]<='9') d+=nowurl[i];
+                else if(d!='') break;
+            }
+            let lsbtn=document.createElement('button');
+            lsbtn.setAttribute('data-v-505b6a97','');
+            lsbtn.setAttribute('data-v-0d84426e','');
+            lsbtn.classList.add('solid','lform-size-middle');
+            lsbtn.type='button';
+            lsbtn.innerText='跳转到保存站';
+            document.getElementsByClassName('btn-actions')[0].appendChild(lsbtn);
+            lsbtn.addEventListener('click',function(){window.open('https://luogu.store/d/'+d,'_blank')});
         }
         if(!nowurl.includes('https://www.luogu.com.cn/ticket')) addBadge();
     }
