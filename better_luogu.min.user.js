@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Better Luogu!
 // @namespace    https://www.luogu.com.cn/user/772464
-// @version      1.14.2
+// @version      1.14.3
 // @description:zh  洛谷扩展
 // @description  Luogu Expansion
 // @author       volatile
@@ -139,8 +139,8 @@
             if(cookiename === name) return cookievalue;
         }
         if(name == 'version'){
-            setcookie('version','1.14.2',114514,'/','luogu.com.cn',true);
-            return "1.14.2";
+            setcookie('version','1.14.3',114514,'/','luogu.com.cn',true);
+            return "1.14.3";
         }
         else if(name == 'update'){
             setcookie('update','true',114514,'/','luogu.com.cn',true);
@@ -196,11 +196,11 @@
         });
     }
     function update(){
-        swal("Better Luogu!","修复了一些bug");
+        swal("Better Luogu!","修复了一些bug，添加了ctrl+enter发犇犇，移除了比赛用户查找（正在找替代方案）");
     }
-    if(getcookie('version')!='1.14.2'&&nowurl=='https://www.luogu.com.cn/'){
+    if(getcookie('version')!='1.14.3'&&nowurl=='https://www.luogu.com.cn/'){
         deletecookie('version');
-        setcookie('version','1.14.2',114514,'/','luogu.com.cn',true);
+        setcookie('version','1.14.3',114514,'/','luogu.com.cn',true);
         update();
     }
     function reallyDeleteChat(id){
@@ -648,55 +648,7 @@
         let badgeModal = document.createElement('div');
         badgeModal.className = 'badge-settings-modal';
         badgeModal.style.cssText = `position: fixed;top: 50%;left: 50%;transform: translate(-50%, -50%);background: white;border-radius: 16px;box-shadow: 0 20px 40px rgba(0,0,0,0.15);z-index: 1001;width: 600px;max-width: 90vw;padding: 25px;font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;display: none;`;
-        badgeModal.innerHTML = `<div style="margin-bottom: 20px;">
-            <h2 style="margin: 0 0 20px 0; color: #2c3e50; font-weight: 600;">Badge 设置</h2>
-            <div class="setting-group" style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #4a5568;">Badge 文字</label>
-                <input type="text" id="badge-text" value="${badgeSettings.text}"
-                       style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px;
-                              font-size: 14px; box-sizing: border-box;"
-                       placeholder="输入 badge 显示的文字">
-            </div>
-            <div class="setting-group" style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #4a5568;">CSS 样式</label>
-                <textarea id="badge-css" rows="6" spellcheck="false"
-                          style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px;
-                                 font-size: 12px; font-family: Consolas, Monaco, 'Courier New', monospace; box-sizing: border-box; resize: vertical;"
-                          placeholder="输入自定义 CSS 样式（支持 CSS 属性）">${badgeSettings.css.trim()}</textarea>
-                <div style="font-size: 12px; color: #718096; margin-top: 5px;">
-                    提示：可以使用标准的 CSS 属性，如 background, color, padding, border-radius 等，<a href="https://www.luogu.me/paste/yboy8d6i">洛谷颜色对照表</a>
-                </div>
-            </div>
-            <div class="setting-group" style="margin-bottom: 25px;">
-                <label style="display: flex; align-items: center; cursor: pointer;">
-                    <input type="checkbox" id="badge-enabled" ${badgeSettings.enabled ? 'checked' : ''}
-                           style="margin-right: 8px; width: 16px; height: 16px;">
-                    <span style="font-weight: 500; color: #4a5568;">启用 Badge</span>
-                </label>
-            </div>
-            <div class="preview-section" style="margin-bottom: 25px;">
-                <h3 style="margin: 0 0 10px 0; font-size: 16px; color: #4a5568;">预览</h3>
-                <div style="background: #f7fafc; border-radius: 8px; padding: 15px;">
-                    <div class="preview-content" style="display: flex; align-items: center; gap: 8px;">
-                        <span id="badge-preview" class="badge-preview">${badgeSettings.text}</span>
-                    </div>
-                </div>
-            </div>
-            <div style="display: flex; gap: 10px; justify-content: flex-end; border-top: 1px solid #eaeaea; padding-top: 20px;">
-                <button id="badge-reset" style="padding: 10px 20px; border: 1px solid #e2e8f0; border-radius: 8px;
-                       background: #f7fafc; color: #4a5568; font-weight: 500; cursor: pointer; transition: all 0.2s;">
-                    重置为默认
-                </button>
-                <button id="badge-cancel" style="padding: 10px 20px; border: 1px solid #e2e8f0; border-radius: 8px;
-                       background: #f7fafc; color: #4a5568; font-weight: 500; cursor: pointer; transition: all 0.2s;">
-                    取消
-                </button>
-                <button id="badge-save" style="padding: 10px 20px; border: none; border-radius: 8px;
-                       background: #3182ce; color: white; font-weight: 500; cursor: pointer; transition: all 0.2s;">
-                    保存设置
-                </button>
-            </div>
-        </div>`;
+        badgeModal.innerHTML = `<div style="margin-bottom:20px;"><h2 style="margin:0 0 20px 0;color:#2c3e50;font-weight:600;">Badge 设置</h2><div class="setting-group" style="margin-bottom:20px;"><label style="display:block;margin-bottom:8px;font-weight:500;color:#4a5568;">Badge 文字</label><input type="text" id="badge-text" value="${badgeSettings.text}" style="width:100%;padding:10px;border:1px solid #e2e8f0;border-radius:8px;font-size:14px;box-sizing:border-box;" placeholder="输入 badge 显示的文字"></div><div class="setting-group" style="margin-bottom:20px;"><label style="display:block;margin-bottom:8px;font-weight:500;color:#4a5568;">CSS 样式</label><textarea id="badge-css" rows="6" spellcheck="false" style="width:100%;padding:10px;border:1px solid #e2e8f0;border-radius:8px;font-size:12px;font-family:Consolas,Monaco,'Courier New',monospace;box-sizing:border-box;resize:vertical;" placeholder="输入自定义 CSS 样式（支持 CSS 属性）">${badgeSettings.css.trim()}</textarea><div style="font-size:12px;color:#718096;margin-top:5px;">提示：可以使用标准的 CSS 属性，如 background, color, padding, border-radius 等，<a href="https://www.luogu.me/paste/yboy8d6i">洛谷颜色对照表</a></div></div><div class="setting-group" style="margin-bottom:25px;"><label style="display:flex;align-items:center;cursor:pointer;"><input type="checkbox" id="badge-enabled" ${badgeSettings.enabled ? 'checked' : ''} style="margin-right:8px;width:16px;height:16px;"><span style="font-weight:500;color:#4a5568;">启用 Badge</span></label></div><div class="preview-section" style="margin-bottom:25px;"><h3 style="margin:0 0 10px 0;font-size:16px;color:#4a5568;">预览</h3><div style="background:#f7fafc;border-radius:8px;padding:15px;"><div class="preview-content" style="display:flex;align-items:center;gap:8px;"><span id="badge-preview" class="badge-preview">${badgeSettings.text}</span></div></div></div><div style="display:flex;gap:10px;justify-content:flex-end;border-top:1px solid #eaeaea;padding-top:20px;"><button id="badge-reset" style="padding:10px 20px;border:1px solid #e2e8f0;border-radius:8px;background:#f7fafc;color:#4a5568;font-weight:500;cursor:pointer;transition:all 0.2s;">重置为默认</button><button id="badge-cancel" style="padding:10px 20px;border:1px solid #e2e8f0;border-radius:8px;background:#f7fafc;color:#4a5568;font-weight:500;cursor:pointer;transition:all 0.2s;">取消</button><button id="badge-save" style="padding:10px 20px;border:none;border-radius:8px;background:#3182ce;color:white;font-weight:500;cursor:pointer;transition:all 0.2s;">保存设置</button></div></div>`;
 
         document.body.appendChild(badgeModal);
         badgeModal.style.display = 'block';
@@ -896,6 +848,14 @@
                         var users = res['users'];
                         if(users[0]!=null) window.open('https://www.luogu.com.cn/user/'+users[0]['uid'].toString(),'_self');
                     });
+                }
+            });
+            $('#feed-content').keydown(function(e) {
+                if (e.ctrlKey&&e.which===13) {
+                    e.preventDefault();
+                    let content=$(this).val();
+                    $(this).val('');
+                    sendBenBen(content);
                 }
             });
         }
@@ -1233,7 +1193,7 @@
                     jsCard.setAttribute('data-v-f4fefeb2','');
                     jsCard.setAttribute('data-v-754e1ea4-s','');
                     jsCard.className='l-card';
-                    jsCard.innerHTML=`<div data-v-f4fefeb2="" class="header"><h3 data-v-f4fefeb2="" style="margin: 0px;">个人介绍（仅Better Luogu!可见）</h3><span data-v-f4fefeb2="" class="edit-button"><!----><button data-v-505b6a97="" data-v-f4fefeb2="" class="lform-size-small" type="button">复制<!----></button></span></div><br><div data-v-f4fefeb2="" class="lfe-marked-wrap introduction">${introduction}<div class="lfe-marked"></div></div>`;
+                    jsCard.innerHTML=`<div data-v-f4fefeb2="" class="header"><h3 data-v-f4fefeb2="" style="margin: 0px;">个人介绍（仅Better Luogu!可见）</h3><span data-v-f4fefeb2="" class="edit-button"><!----><button data-v-505b6a97="" data-v-f4fefeb2="" class="lform-size-small" type="button">复制<!----></button></span></div><br><div data-v-f4fefeb2="" class="lfe-marked-wrap introduction"><div class="lfe-marked">${introduction}</div></div>`;
                     let flag=1;
                     let main=document.querySelector('#app > div.main-container > main > div > div.l-card > div.user-header-bottom > div.menu > ul > li:nth-child(1) > span');
                     setInterval(function(){
@@ -1261,207 +1221,6 @@
                     },1000);
                 }
             });
-        }
-        else if(nowurl.includes('https://www.luogu.com.cn/contest/')&&!nowurl.includes('https://www.luogu.com.cn/contest/list')){
-            let contestId='';
-            for(let i=0;i<nowurl.length;i++){
-                if(nowurl[i]>='0'&&nowurl[i]<='9') contestId+=nowurl[i];
-                else if(contestId) break;
-            }
-            let cid=Number(contestId);
-            let contest_search=document.createElement('div');
-            contest_search.innerHTML='<div class="contest-search-box-btlg"><input class="contest-search-input-btlg" type="text" placeholder="输入uid/用户名" name="search-user"><svg class="contest-search-icon-btlg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div><br>';
-            let contest_search_input = contest_search.querySelector('.contest-search-input-btlg');
-            let contest_search_icon = contest_search.querySelector('.contest-search-icon-btlg');
-
-            function displayUserInfoModal(userData, rank) {
-                let user = userData.user;
-                let score = userData.score;
-                let runningTime = userData.runningTime;
-                let details = userData.details;
-
-                let minutes = Math.floor(runningTime / 60000);
-                let seconds = Math.floor((runningTime % 60000) / 1000);
-                let timeStr = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-
-                let modal = document.createElement('div');
-                modal.className = 'custom-modal';
-                modal.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;border-radius:16px;box-shadow:0 20px 40px rgba(0,0,0,0.15);z-index:1000;width:500px;max-width:95vw;display:none;';
-
-                let modalContent = `<div style="padding:25px;text-align:center"><div style="margin-bottom:20px"><img src="${user.avatar}" style="width:80px;height:80px;border-radius:50%;border:3px solid ${lgColor(user.color)}"/></div><h3 style="margin:10px 0 5px;color:${lgColor(user.color)}">${user.name}</h3><p style="color:#718096;margin:5px 0">UID: ${user.uid}</p><p style="color:#667eea;margin:5px 0 20px">排名: ${rank}</p><div style="background:#f7fafc;border-radius:8px;padding:15px;margin:15px 0;"><div style="display:flex;justify-content:space-around;margin-bottom:10px;"><div style="text-align:center;"><div style="font-size:20px;font-weight:bold;color:#2d3748;">${score}</div><div style="font-size:12px;color:#718096;">总分</div></div><div style="text-align:center;"><div style="font-size:20px;font-weight:bold;color:#2d3748;">${timeStr}</div><div style="font-size:12px;color:#718096;">总用时</div></div></div></div>`;
-
-                if(Object.keys(details).length > 0) {
-                    modalContent += `<div style="text-align:left;margin-top:15px;"><h4 style="margin:0 0 10px;color:#2c3e50;font-size:14px;font-weight:600;">题目得分详情</h4><div style="max-height:200px;overflow-y:auto;font-size:13px;">`;
-
-                    let problemIds = Object.keys(details);
-
-                    problemIds.sort((a, b) => {
-                        let numA = parseInt(a.replace(/\D/g, '')) || 0;
-                        let numB = parseInt(b.replace(/\D/g, '')) || 0;
-                        return numA - numB;
-                    });
-                    for(let problemId of problemIds) {
-                        let problem = details[problemId];
-                        let problemTimeDisplay = '';
-                        if (problem.score > 0) {
-                            let problemTimeMinutes = Math.floor(problem.runningTime / 60000);
-                            let problemTimeSeconds = Math.floor((problem.runningTime % 60000) / 1000);
-                            problemTimeDisplay = `${problemTimeMinutes}:${problemTimeSeconds.toString().padStart(2, '0')}`;
-                        }
-                        modalContent += `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f1f3f4;"><span style="font-weight:500;">${problemId}</span><div style="display:flex;gap:15px;"><span style="color:${problem.score > 0 ? '#27ae60' : '#e74c3c'}">${problem.score}分</span><span style="color:#718096;">${problemTimeDisplay}</span></div></div>`;
-                    }
-
-                    modalContent += `</div></div>`;
-                }
-                modalContent += `<div style="display:flex;gap:10px;margin-top:25px;"><a href="https://www.luogu.com.cn/user/${user.uid}" target="_blank" style="flex:1;background:#667eea;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:500;text-decoration:none;text-align:center;">查看主页</a><button id="copyUserInfoBtn" style="flex:1;background:#edf2f7;color:#2d3748;border:1px solid #e2e8f0;padding:10px 20px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:500;">复制信息</button></div></div>`;
-                modal.innerHTML = modalContent;
-                document.body.appendChild(modal);
-
-                modal.style.display = 'block';
-                showMask();
-
-                document.getElementById('copyUserInfoBtn').addEventListener('click', function() {
-                    let userInfo = `用户: ${user.name} (UID: ${user.uid})\n排名: ${rank}\n总分: ${score}\n总用时: ${timeStr}`;
-
-                    if(Object.keys(details).length > 0) {
-                        userInfo += `\n\n题目得分:\n`;
-
-                        let problemIds = Object.keys(details);
-                        problemIds.sort((a, b) => {
-                            let numA = parseInt(a.replace(/\D/g, '')) || 0;
-                            let numB = parseInt(b.replace(/\D/g, '')) || 0;
-                            return numA - numB;
-                        });
-
-                        for(let problemId of problemIds) {
-                            let problem = details[problemId];
-                            let problemTimeDisplay = '';
-                            if (problem.score > 0) {
-                                let problemTimeMinutes = Math.floor(problem.runningTime / 60000);
-                                let problemTimeSeconds = Math.floor((problem.runningTime % 60000) / 1000);
-                                problemTimeDisplay = `${problemTimeMinutes}:${problemTimeSeconds.toString().padStart(2, '0')}`;
-                            }
-                            userInfo += `${problemId}: ${problem.score}分 (${problemTimeDisplay})\n`;
-                        }
-                    }
-
-                    GM_setClipboard(userInfo);
-                    swal({title: "Better Luogu!",
-                          text: "用户信息已复制到剪贴板",
-                          icon: "success",
-                          topLayer: true});
-                });
-                mask.addEventListener('click', function() {
-                    modal.style.display = 'none';
-                    hideMask();
-                    modal.remove();
-                });
-            }
-
-            function contestFindUser() {
-                let searchusr = contest_search_input.value.trim();
-                if(!searchusr) return;
-
-                let isUid = /^\d+$/.test(searchusr);
-                let searchValue = isUid ? Number(searchusr) : searchusr;
-                let searchFinished = false;
-
-                swal({ title: "Better Luogu!", text: "正在并发查找用户，请稍候...", icon: "info", buttons: false, closeOnClickOutside: false, closeOnEsc: false });
-
-                $.get(`https://www.luogu.com.cn/fe/api/contest/scoreboard/${cid}`, {}, function(firstRes) {
-                    let totalCount = firstRes.scoreboard.count;
-                    let perPage = firstRes.scoreboard.perPage || 50;
-                    let totalPages = Math.ceil(totalCount / perPage);
-
-                    let foundInFirstPage = findUserInPage(firstRes.scoreboard.result, searchValue, isUid);
-                    if(foundInFirstPage) {
-                        swal.close();
-                        displayUserInfoModal(foundInFirstPage.user, foundInFirstPage.index + 1);
-                        return;
-                    }
-
-                    let pagePromises = [];
-                    let concurrencyLimit = 5;
-                    let foundUserResult = null;
-
-                    function fetchPage(pageNum) {
-                        return $.get(`https://www.luogu.com.cn/fe/api/contest/scoreboard/${cid}?page=${pageNum}`, {});
-                    }
-
-                    async function batchFetchPages(startPage, batchSize) {
-                        for(let i = startPage; i <= totalPages && i < startPage + batchSize; i++) {
-                            if(searchFinished) return;
-                            pagePromises.push(
-                                fetchPage(i).then(function(pageRes) {
-                                    if(searchFinished) return;
-                                    let found = findUserInPage(pageRes.scoreboard.result, searchValue, isUid);
-                                    if(found && !searchFinished) {
-                                        searchFinished = true;
-                                        foundUserResult = {
-                                            user: found.user,
-                                            rank: (i - 1) * perPage + found.index + 1,
-                                            page: i
-                                        };
-                                    }
-                                })
-                            );
-                        }
-                        await Promise.allSettled(pagePromises);
-
-                        if(foundUserResult) {
-                            swal.close();
-                            displayUserInfoModal(foundUserResult.user, foundUserResult.rank);
-                            return true;
-                        }
-                        return false;
-                    }
-
-                    (async function parallelSearch() {
-                        for(let startPage = 2; startPage <= totalPages; startPage += concurrencyLimit) {
-                            if(searchFinished) break;
-                            let found = await batchFetchPages(startPage, concurrencyLimit);
-                            if(found) return;
-                        }
-
-                        if(!searchFinished) {
-                            swal.close();
-                            swal("Better Luogu!", "未找到该用户", "error");
-                        }
-                    })();
-                }).fail(function() {
-                    swal.close();
-                    swal("Better Luogu!", "获取比赛信息失败", "error");
-                });
-            }
-            function findUserInPage(users, searchValue, isUid) {
-                for(let i = 0; i < users.length; i++) {
-                    let user = users[i].user;
-                    if(isUid) {
-                        if(user.uid === searchValue) {
-                            return {user: users[i], index: i};
-                        }
-                    } else {
-                        if(user.name.toLowerCase().includes(searchValue.toLowerCase())) {
-                            return {user: users[i], index: i};
-                        }
-                    }
-                }
-                return null;
-            }
-
-            contest_search_input.addEventListener('keydown',function(e){
-                if(e.keyCode === 13 || e.which === 13) contestFindUser();
-            });
-            contest_search_icon.addEventListener('click', function(){contestFindUser();});
-
-            let flag=1;
-            setInterval(function(){
-                if(document.querySelector('#app > div.main-container > main > div > div.card.padding-none > div > ul > li:nth-child(3) > span').classList.contains('selected')){
-                    if(flag) document.querySelector('#app > div.main-container > main > div > div.card.padding-default > div').insertAdjacentElement('beforebegin', contest_search);
-                    flag=0;
-                }
-                else flag=1;
-            },1000);
         }
         let userCard=document.querySelector('.header[data-v-1a591deb]');
         if(userCard!=null){
@@ -1497,6 +1256,20 @@
                 fsNum.textContent = fans;
                 fs.appendChild(fsNum);
                 fs.appendChild(fsLabel);
+                $.get('https://www.luogu.com.cn/api/feed/list?user=' + useruid, {}, function(feedRes) {
+                    let feedCount = feedRes['feeds']?.['count'] || 0;
+                    const feed = document.createElement('a');
+                    feed.href = 'https://www.luogu.com.cn/user/' + useruid + '/activity';
+                    const feedLabel = document.createElement('span');
+                    feedLabel.className = 'label';
+                    feedLabel.textContent = '动态';
+                    const feedNum = document.createElement('span');
+                    feedNum.className = 'num';
+                    feedNum.textContent = feedCount;
+                    feed.appendChild(feedNum);
+                    feed.appendChild(feedLabel);
+                    f.appendChild(feed);
+                })
                 f.appendChild(fl);
                 f.appendChild(fs);
                 userCard.appendChild(cr);
