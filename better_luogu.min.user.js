@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Better Luogu!
 // @namespace    https://www.luogu.com.cn/user/772464
-// @version      1.14.3
+// @version      1.14.4
 // @description:zh  洛谷扩展
 // @description  Luogu Expansion
 // @author       volatile
@@ -75,6 +75,24 @@
             this.time=time
         }
     }
+    function cachedGet(url, params, callback, cacheKeySuffix, ttlHours = 1) {
+        const cacheKey = `blg_cache_${cacheKeySuffix}_${useruid}`;
+        const cached = GM_getValue(cacheKey);
+        const now = Date.now();
+
+        if (cached && cached.timestamp && (now - cached.timestamp) < ttlHours * 3600000) {
+            callback(cached.data);
+            return;
+        }
+        $.get(url, params, function(data) {
+            const cache = {
+                data: data,
+                timestamp: Date.now()
+            };
+            GM_setValue(cacheKey, cache);
+            callback(data);
+        });
+    }
 
     function getTime(timestamp){
         const date=new Date(timestamp);
@@ -107,7 +125,7 @@
     GM_addStyle(`.ccf-info{font-size:8px!important;color:#666;margin:5px 0!important;display:block;line-height:1.2;text-align:center!important;}.follow-fans-info{display:flex;gap:20px;margin:2px 0 4px 0!important;align-items:center;justify-content:center!important;}.follow-fans-info a{text-decoration:none!important;display:flex;flex-direction:column;align-items:center;}.follow-fans-info .label{font-size:12px!important;color:#888!important;margin-bottom:2px;transition:color 0.2s ease;}.follow-fans-info .num{font-size:1em!important;font-weight:bold;color:#666!important;line-height:1;margin:0;transition:color 0.2s ease;}.follow-fans-info a:hover .label,.follow-fans-info a:hover .num{color:#0e90d2!important;text-decoration:none!important;}`);
     let nowurl = window.location.href;
     var swalcss=document.createElement("style");
-    swalcss.innerHTML=".swal-overlay {background-color: rgba(0, 0, 0, 0.5);}";
+    swalcss.innerHTML=".swal-overlay {background-color: rgba(0, 0, 0, 0.5);} .swal-overlay ";
     var css = ".search-container{width:600px;max-width:90vw;display:none;z-index:10000;position:fixed;top:20%;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.98);backdrop-filter:blur(20px);border-radius:16px;box-shadow:0 20px 40px rgba(0,0,0,0.15),0 0 0 1px rgba(255,255,255,0.1);overflow:hidden;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);border:1px solid rgba(255,255,255,0.2)}.search-btlg{width:100%;height:70px;padding:0 60px 0 25px;border:none;border-radius:0;font-size:18px;font-weight:500;transition:all 0.3s ease;background:transparent;color:#2d3748;box-sizing:border-box;letter-spacing:-0.2px}.search-btlg:focus{outline:none;background:rgba(102,126,234,0.02)}.search-btlg::placeholder{color:#a0aec0;font-weight:400;letter-spacing:normal}#mask{position:fixed;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);z-index:100;transition:all 0.3s ease}div[data-v-0a593618],div[data-v-fdcd5a58]{display:none}@media (prefers-color-scheme: dark){.search-container{background:rgba(45,55,72,0.95);border:1px solid rgba(255,255,255,0.1)}.search-btlg{color:#e2e8f0}.search-btlg::placeholder{color:#718096}}@media (max-width:768px){.search-container{width:95vw;top:10%;border-radius:12px}.search-btlg{height:60px;font-size:16px;padding:0 50px 0 20px}}.contest-search-box-btlg{display:flex;align-items:center;border:1px solid #e0e0e0;border-radius:4px;padding:0 8px;height:36px;width:300px;box-sizing:border-box;}.contest-search-input-btlg{flex:1;border:none;outline:none;height:100%;font-size:14px;padding:0 4px;}.contest-search-input-btlg::placeholder{color:#999;}.contest-search-icon-btlg{width:16px;height:16px;fill:#999;cursor:pointer;margin-left:4px;}";
     var style = document.createElement("style");
     style.innerHTML = css;
@@ -139,8 +157,8 @@
             if(cookiename === name) return cookievalue;
         }
         if(name == 'version'){
-            setcookie('version','1.14.3',114514,'/','luogu.com.cn',true);
-            return "1.14.3";
+            setcookie('version','1.14.4',114514,'/','luogu.com.cn',true);
+            return "1.14.4";
         }
         else if(name == 'update'){
             setcookie('update','true',114514,'/','luogu.com.cn',true);
@@ -196,11 +214,11 @@
         });
     }
     function update(){
-        swal("Better Luogu!","修复了一些bug，添加了ctrl+enter发犇犇，移除了比赛用户查找（正在找替代方案）");
+        swal("Better Luogu!","针对最近的一些事情移除了一些功能\n修复了苹果设备无法唤醒搜索栏的bug");
     }
-    if(getcookie('version')!='1.14.3'&&nowurl=='https://www.luogu.com.cn/'){
+    if(getcookie('version')!='1.14.4'&&nowurl=='https://www.luogu.com.cn/'){
         deletecookie('version');
-        setcookie('version','1.14.3',114514,'/','luogu.com.cn',true);
+        setcookie('version','1.14.4',114514,'/','luogu.com.cn',true);
         update();
     }
     function reallyDeleteChat(id){
@@ -584,7 +602,7 @@
         });
 
         let links = document.querySelector('.lg-article.am-hide-sm');
-        links.insertAdjacentHTML('beforeend','<p><strong>Better Luogu!</strong><br><a href="http://blg.volatiles.dpdns.org/" target="_blank">文档</a> | <a href="https://www.wjx.cn/vm/wmliui0.aspx">问卷调查</a></p><p><strong>extend-luogu</strong><br><a href="https://fastly.jsdelivr.net/gh/extend-luogu/extend-luogu/dist/extend-luogu.min.user.js" target="_blank">下载</a> | <a href="https://extend-luogu.github.io/docs/" target="_blank">文档</a></p><p><strong>oiso++</strong><br><a href="https://amzcd.top/files/ex-oiso.min.user.js" target="_blank">下载</a></p><p><strong>Amazing Luogu</strong><br><a href="http://gh.halonice.com/https://raw.githubusercontent.com/zym2013/Amazing-Luogu/refs/heads/main/index.user.js" target="_blank">下载</a> | <a href="https://zym2013.dpdns.org/amldocs/" target="_blank">文档</a></p>');
+        links.insertAdjacentHTML('beforeend','<p><strong>Better Luogu!</strong><br><a href="http://blg.volatiles.dpdns.org/" target="_blank">文档</a> | <a href="https://www.wjx.cn/vm/wmliui0.aspx">问卷调查</a></p><p><strong>extend-luogu</strong><br><a href="https://fastly.jsdelivr.net/gh/extend-luogu/extend-luogu/dist/extend-luogu.min.user.js" target="_blank">下载</a> | <a href="https://extend-luogu.github.io/docs/" target="_blank">文档</a></p><p><strong>oiso++</strong><br><a href="https://amzcd.top/files/ex-oiso.min.user.js" target="_blank">下载</a></p><p><strong>Amazing Luogu</strong><br><a href="http://gh.halonice.com/https://raw.githubusercontent.com/zym2013/Amazing-Luogu/refs/heads/main/index.user.js" target="_blank">下载</a> | <a href="https://zym2013.dpdns.org/amldocs/" target="_blank">文档</a></p><p><strong>GenGen RMJ</strong><br><a href="https://scriptcat.org/zh-CN/script-show-page/5099" target="_blank">下载</a> | <a href="https://gengen.qzz.io/" target="_blank">官网</a></p>');
     }
     function checkNotice(){
         $.get('https://www.luogu.com.cn/api/feed/list?user=1416603',{},function(res){
@@ -759,11 +777,14 @@
             hideMask();
         }
     }
+    function about(){
+        swal("Better Luogu! - 关于","作者：volatile\n\n用户卡片相关：目前为防止短时间内大量访问，数据只会在一个小时内更新\n\nbadge相关：badge只能在当前设备上查看\n\n比赛用户查询相关：正在想办法替代");
+    }
     window.onload=function(){
         checkNotice();
         let button = document.createElement("a");
         button.innerHTML = '<button id="NLTB" style=\"background-color: rgb\(94,114,228\);border-radius: 7px;color: white;border: none;padding: 7px 12px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;margin: 4px 2px;cursor: pointer;border: none;box-shadow: 2px 3px 7px #000;\"><b>BETTER<b></button>';
-        if(nowurl == 'https://www.luogu.com.cn/'||nowurl.includes('https://www.luogu.com.cn/chat')||nowurl.includes('https://www.luogu.com.cn/user/notification')){
+        if(nowurl == 'https://www.luogu.com.cn/'||nowurl.includes('https://www.luogu.com.cn/chat')){
             document.querySelector('#app > div.main-container > div.wrapper.wrapped.lfe-body.header-layout.tiny > div.container > nav').insertAdjacentElement('beforebegin', button);
 
             const tb = document.getElementById("NLTB");
@@ -772,7 +793,7 @@
                 swalcss.remove();
                 swalcss.innerHTML=".swal-overlay {background-color: rgba(0, 0, 0, 0.5);}";
                 document.head.appendChild(swalcss);
-                swal("Better Luogu!","选择一个更改", {
+                swal("Better Luogu!","选择一个操作", {
                     buttons: {
                         update: {
                             text: "检查更新",
@@ -793,6 +814,10 @@
                         badge: {
                             text: "badge",
                             value: "badge"
+                        },
+                        about: {
+                            text: "关于",
+                            value: "about"
                         }
                     },
                 }).then((value) => {
@@ -812,7 +837,9 @@
                         case "badge":
                             badge();
                             break;
-                        case "not": not();
+                        case "about":
+                            about();
+                            break;
                     }
                 });
             });
@@ -960,7 +987,7 @@
         }
         let isSearch = false;
         document.addEventListener('keydown', function(event){
-            if(event.altKey && event.key == 's'){
+            if(event.altKey && event.code === 'KeyS'){
                 if(!isSearch){
                     search.style.display = 'flex';
                     showMask();
@@ -1222,9 +1249,9 @@
                 }
             });
         }
-        let userCard=document.querySelector('.header[data-v-1a591deb]');
-        if(userCard!=null){
-            $.get('https://www.luogu.com.cn/api/user/info/'+useruid,{},function(res){
+        let userCard = document.querySelector('.header[data-v-1a591deb]');
+        if (userCard != null) {
+            cachedGet(`https://www.luogu.com.cn/api/user/info/${useruid}`, {}, function(res) {
                 let follow = res['user'].followingCount || 0;
                 let fans = res['user'].followerCount || 0;
                 let ccfLevel = res['user']['rating']?.['user']?.ccfLevel || '未评级';
@@ -1237,7 +1264,7 @@
                 const f = document.createElement('div');
                 f.className = 'follow-fans-info';
                 const fl = document.createElement('a');
-                fl.href = 'https://www.luogu.com.cn/user/' + useruid + '/following';
+                fl.href = `https://www.luogu.com.cn/user/${useruid}/following`;
                 const flLabel = document.createElement('span');
                 flLabel.className = 'label';
                 flLabel.textContent = '关注';
@@ -1247,7 +1274,7 @@
                 fl.appendChild(flNum);
                 fl.appendChild(flLabel);
                 const fs = document.createElement('a');
-                fs.href = 'https://www.luogu.com.cn/user/' + useruid + '/follower';
+                fs.href = `https://www.luogu.com.cn/user/${useruid}/follower`;
                 const fsLabel = document.createElement('span');
                 fsLabel.className = 'label';
                 fsLabel.textContent = '粉丝';
@@ -1256,10 +1283,12 @@
                 fsNum.textContent = fans;
                 fs.appendChild(fsNum);
                 fs.appendChild(fsLabel);
-                $.get('https://www.luogu.com.cn/api/feed/list?user=' + useruid, {}, function(feedRes) {
+                f.appendChild(fl);
+                f.appendChild(fs);
+                cachedGet(`https://www.luogu.com.cn/api/feed/list?user=${useruid}`, {}, function(feedRes) {
                     let feedCount = feedRes['feeds']?.['count'] || 0;
                     const feed = document.createElement('a');
-                    feed.href = 'https://www.luogu.com.cn/user/' + useruid + '/activity';
+                    feed.href = `https://www.luogu.com.cn/user/${useruid}/activity`;
                     const feedLabel = document.createElement('span');
                     feedLabel.className = 'label';
                     feedLabel.textContent = '动态';
@@ -1269,12 +1298,11 @@
                     feed.appendChild(feedNum);
                     feed.appendChild(feedLabel);
                     f.appendChild(feed);
-                })
-                f.appendChild(fl);
-                f.appendChild(fs);
-                userCard.appendChild(cr);
-                userCard.appendChild(f);
-            });
+
+                    userCard.appendChild(cr);
+                    userCard.appendChild(f);
+                }, 'feedList', 1);
+            }, 'userInfo', 1);
         }
         if(nowurl.includes('https://www.luogu.com.cn/discuss/')){
             let d='';
