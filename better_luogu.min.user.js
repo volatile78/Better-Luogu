@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Better Luogu!
 // @namespace    https://www.luogu.com.cn/user/772464
-// @version      1.14.4
+// @version      1.14.5
 // @description:zh  洛谷扩展
 // @description  Luogu Expansion
 // @author       volatile
@@ -157,8 +157,8 @@
             if(cookiename === name) return cookievalue;
         }
         if(name == 'version'){
-            setcookie('version','1.14.4',114514,'/','luogu.com.cn',true);
-            return "1.14.4";
+            setcookie('version','1.14.5',114514,'/','luogu.com.cn',true);
+            return "1.14.5";
         }
         else if(name == 'update'){
             setcookie('update','true',114514,'/','luogu.com.cn',true);
@@ -169,8 +169,8 @@
             return "bing";
         }
         else if(name=='code'){
-            setcookie('code','1',1919810,'/','luogu.com.cn',true);
-            return "1";
+            setcookie('code','0',1919810,'/','luogu.com.cn',true);
+            return "0";
         }
         else if(name=='love'){
             setcookie('love','0',1919810,'/','luogu.com.cn',true);
@@ -214,11 +214,11 @@
         });
     }
     function update(){
-        swal("Better Luogu!","针对最近的一些事情移除了一些功能\n修复了苹果设备无法唤醒搜索栏的bug");
+        swal("Better Luogu!","修复了一些bug");
     }
-    if(getcookie('version')!='1.14.4'&&nowurl=='https://www.luogu.com.cn/'){
+    if(getcookie('version')!='1.14.5'&&nowurl=='https://www.luogu.com.cn/'){
         deletecookie('version');
-        setcookie('version','1.14.4',114514,'/','luogu.com.cn',true);
+        setcookie('version','1.14.5',114514,'/','luogu.com.cn',true);
         update();
     }
     function reallyDeleteChat(id){
@@ -455,7 +455,7 @@
             }
             rvmghtml=`<div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; background-color: #f5f7fa; min-height: 100vh;"><div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;"><h1 style="color: #2c3e50; margin: 0; font-weight: 600;">评论管理</h1><div><button id="batchSelect" style="background-color: #27ae60; color: white; border: none; padding: 10px 16px; border-radius: 4px; cursor: pointer; margin-right: 10px; font-weight: 500;">全选</button><button id="batchDelete"style="background-color: #e74c3c; color: white; border: none; padding: 10px 16px; border-radius: 4px; cursor: pointer; font-weight: 500;">批量删除</button></div></div><div id="batchActions"style="background-color: #3498db; color: white; padding: 12px 20px; border-radius: 6px; margin-bottom: 20px; display: none; align-items: center; justify-content: space-between;"><span id="selectedCount"style="font-weight: 500;">已选择<span style="color: #3498db; font-weight: 500;"id="slct"></span>条评论</span><div><button id="selectAll"style="background: transparent; color: white; border: 1px solid white; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-right: 10px;">全选</button><button id="deselectAll"style="background: transparent; color: white; border: 1px solid white; padding: 6px 12px; border-radius: 4px; cursor: pointer;">取消选择</button></div></div><div style="background-color: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow: hidden;"><div style="display: flex; background-color: #f8f9fa; padding: 15px 20px; border-bottom: 1px solid #eaecef; font-weight: 600; color: #495057;"><div style="width: 50px; text-align: center;">选择</div><div style="width: 80px;">编号</div><div style="width: 150px;">用户名</div><div style="flex: 1;">评论内容</div><div style="width: 120px; text-align: center;">操作</div></div>`;
             reviews.forEach((review,index)=>{
-                rvmghtml+=`<div class="comment-item"style="display: flex; padding: 18px 20px; border-bottom: 1px solid #f1f3f4; align-items: flex-start; transition: background-color 0.2s;"><div style="width: 50px; text-align: center; padding-top: 3px;"><input type="checkbox"class="comment-checkbox"style="cursor: pointer; width: 18px; height: 18px;"${(review.choose?'checked':'')} data-comment-id="${review.id}"></div><div style="width: 80px; color: #6c757d; font-weight: 500;">${review.id}</div><div style="width: 150px;"><div style="font-weight: 500; color: #2c3e50;"><a href="https://www.luogu.com.cn/user/${review.uid}">${review.user}</a></div><div style="font-size: 12px; color: #7f8c8d;">${review.time}</div></div><div style="flex: 1; color: #34495e; line-height: 1.5; word-wrap: break-word; max-width: 600px;">${review.content}</div><div style="width: 120px; text-align: right;"><button class="btn-delete"style="background-color: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; " data-comment-id="${review.id}">删除</button></div></div>`;
+                rvmghtml+=`<div class="comment-item"style="display: flex; padding: 18px 20px; border-bottom: 1px solid #f1f3f4; align-items: flex-start; transition: background-color 0.2s;"><div style="width: 50px; text-align: center; padding-top: 3px;"><input type="checkbox"class="comment-checkbox"style="cursor: pointer; width: 18px; height: 18px;"${(review.choose?'checked':'')} data-comment-id="${review.id}"></div><div style="width: 80px; color: #6c757d; font-weight: 500;">${review.id}</div><div style="width: 150px;"><div style="font-weight: 500; color: #2c3e50;"><a href="https://www.luogu.com.cn/user/${review.uid}">${review.user}</a></div><div style="font-size: 12px; color: #7f8c8d;">${review.time}</div></div><div style="flex: 1; color: #34495e; line-height: 1.5; word-wrap: break-word; max-width: 600px;">${review.content.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div><div style="width: 120px; text-align: right;"><button class="btn-delete"style="background-color: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; " data-comment-id="${review.id}">删除</button></div></div>`;
             });
             _rvmg=rvmghtml+`</div><div style="text-align: center; margin: 25px 0;">${(reviews.length%20==0&&reviews.length?`<button style="background-color: #3498db; color: white; border: none; padding: 12px 30px; border-radius: 6px; cursor: pointer; font-size: 15px; font-weight: 500; transition: background-color 0.3s;" id="getmorerv">加载更多</button>`:``)}</div><div style="display: flex; justify-content: space-between; margin-top: 20px; color: #7f8c8d; font-size: 14px;"><div>已获取<span style="color: #3498db; font-weight: 500;"id="rvct">${reviews.length}</span>条评论</div></div></div>`;
             rvmg.innerHTML=_rvmg;
@@ -1214,7 +1214,7 @@
                 let verified=res['user'].verified;
                 if(!isAdmin&&!verified){
                     let it=res['user'].introduction;
-                    let introduction=marked.parse(it);
+                    let introduction=marked.parse(it.replace(/</g, '&lt;').replace(/>/g, '&gt;'));
                     let jsCard=document.createElement('div');
                     jsCard.setAttribute('data-v-c3407962','');
                     jsCard.setAttribute('data-v-f4fefeb2','');
