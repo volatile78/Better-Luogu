@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Better Luogu!
 // @namespace    https://www.luogu.com.cn/user/772464
-// @version      1.14.6
+// @version      1.14.7
 // @description:zh  洛谷扩展
 // @description  Luogu Expansion
 // @author       volatile
@@ -149,8 +149,8 @@
             if(cookiename === name) return cookievalue;
         }
         if(name == 'version'){
-            setcookie('version','1.14.6',114514,'/','luogu.com.cn',true);
-            return "1.14.6";
+            setcookie('version','1.14.7',114514,'/','luogu.com.cn',true);
+            return "1.14.7";
         }
         else if(name == 'update'){
             setcookie('update','true',114514,'/','luogu.com.cn',true);
@@ -206,11 +206,11 @@
         });
     }
     function update(){
-        swal("Better Luogu!","修复了一些bug");
+        swal("Better Luogu!","修复了缺省源bug");
     }
-    if(getcookie('version')!='1.14.6'&&nowurl=='https://www.luogu.com.cn/'){
+    if(getcookie('version')!='1.14.7'&&nowurl=='https://www.luogu.com.cn/'){
         deletecookie('version');
-        setcookie('version','1.14.6',114514,'/','luogu.com.cn',true);
+        setcookie('version','1.14.7',114514,'/','luogu.com.cn',true);
         update();
     }
     function reallyDeleteChat(id){
@@ -1042,7 +1042,7 @@
                     let t=document.getElementsByClassName('cm-content')[0];
                     let nowcode;
                     if(t!=null) nowcode=t.innerHTML;
-                    if(nowcode=='<div class="cm-activeLine cm-line"><br></div>'&&flag1){
+                    if(nowcode=='<div class="cm-line cm-activeLine"><br></div>'&&flag1){
                         let incode=localStorage.getItem('code');
                         document.querySelector('#app > div.main-container > div > div.panel.panel-b > div > div.panel.panel-a > div:nth-child(2) > div > div > div.cm-scroller > div.cm-content.cm-lineWrapping').innerHTML=incode;
                         flag1=false;
