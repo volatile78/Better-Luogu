@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Better Luogu!
 // @namespace    https://www.luogu.com.cn/user/772464
-// @version      1.14.7
+// @version      1.14.8
 // @description:zh  洛谷扩展
 // @description  Luogu Expansion
 // @author       volatile
@@ -68,7 +68,8 @@
         }
     }
     function cachedGet(url, params, callback, cacheKeySuffix, ttlHours = 1) {
-        const cacheKey = `blg_cache_${cacheKeySuffix}_${useruid}`;
+        const nowUid = getcookie('uid');
+        const cacheKey = `blg_cache_${cacheKeySuffix}_${nowUid}`;
         const cached = GM_getValue(cacheKey);
         const now = Date.now();
 
@@ -114,7 +115,7 @@
     let rvmghtml;
     let lastid=0;
     GM_addStyle(`.ops[data-v-1a591deb] a[data-v-1a591deb]{display:block!important;width:auto!important;margin:0.3em 0!important;text-align:left!important;padding:0.4em 2em 0.4em 0.6em!important;line-height:1.3!important;border-radius:4px!important;transition:all 0.2s!important;background:transparent!important;position:relative!important;color:inherit!important;text-decoration:none!important;cursor:pointer!important;transform:scale(1);}.ops[data-v-1a591deb] a[data-v-1a591deb] svg{width:16px!important;height:16px!important;margin:0!important;margin-right:8px!important;display:inline-block!important;vertical-align:middle!important;flex-shrink:0!important;}.ops[data-v-1a591deb] a[data-v-1a591deb]::after{content:""!important;position:absolute!important;right:0.6em!important;top:50%!important;transform:translateY(-50%) scale(1)!important;width:12px!important;height:12px!important;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 5l7 7-7 7'/%3E%3C/svg%3E") no-repeat center center!important;background-size:100% 100%!important;transition:all 0.2s!important;}.ops[data-v-1a591deb] a[data-v-1a591deb]:hover{background:#f0f0f0!important;transform:scale(1.03);}.ops[data-v-1a591deb] a[data-v-1a591deb]:hover::after{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 5l7 7-7 7'/%3E%3C/svg%3E") no-repeat center center!important;right:0.5em!important;transform:translateY(-50%) scale(1.2)!important;width:14px!important;height:14px!important;}.ops[data-v-1a591deb]{padding:0.1em 0.5em!important;margin-top:-0.2em!important;text-align:left!important;font-size:0.9em!important;}.center[data-v-1f03983a]{height:auto!important;min-height:unset!important;padding:0.5em!important;box-sizing:border-box!important;}.header[data-v-1a591deb]{margin-bottom:0.05em!important;text-align:center!important;}footer[data-v-1a591deb]{margin-top:0.5em!important;}`);
-    GM_addStyle(`.ccf-info{font-size:8px!important;color:#666;margin:5px 0!important;display:block;line-height:1.2;text-align:center!important;}.follow-fans-info{display:flex;gap:20px;margin:2px 0 4px 0!important;align-items:center;justify-content:center!important;}.follow-fans-info a{text-decoration:none!important;display:flex;flex-direction:column;align-items:center;}.follow-fans-info .label{font-size:12px!important;color:#888!important;margin-bottom:2px;transition:color 0.2s ease;}.follow-fans-info .num{font-size:1em!important;font-weight:bold;color:#666!important;line-height:1;margin:0;transition:color 0.2s ease;}.follow-fans-info a:hover .label,.follow-fans-info a:hover .num{color:#0e90d2!important;text-decoration:none!important;}`);
+    GM_addStyle(`.am-comment-avatar{box-shadow:0 1px 3px rgba(0,0,0,0.07);border:none !important}.am-comment-main{border:1px solid #e5e7eb !important;border-radius:12px !important;background:#ffffff !important;box-shadow:0 1px 4px rgba(0,0,0,0.04);overflow:hidden}.am-comment-main:before{border-right-color:#e5e7eb !important}.am-comment-main:after{border-right-color:#fff !important}.am-comment-flip .am-comment-main:before{border-left-color:#e5e7eb !important}.am-comment-flip .am-comment-main:after{border-left-color:#fff !important}.am-comment-hd{background:#fafafa !important;border-bottom:1px solid #f0f0f0 !important}.am-comment-meta{padding:10px 14px !important}.am-comment-bd{padding:14px 16px !important;font-size:14px;line-height:1.6;color:#222}.am-comment-actions a{color:#888 !important}.am-comment-actions a:hover{color:#0e90d2 !important;background:rgba(14,144,210,0.06)}.am-comments-list .am-comment{margin-top:18px !important}.am-comment-success .am-comment-main{border-color:#82d282 !important}.am-comment-success .am-comment-main:before{border-right-color:#82d282 !important}.am-comment-warning .am-comment-main{border-color:#ffb366 !important}.am-comment-warning .am-comment-main:before{border-right-color:#ffb366 !important}.am-comment-danger .am-comment-main{border-color:#f28883 !important}.am-comment-danger .am-comment-main:before{border-right-color:#f28883 !important}.am-comment-primary .am-comment-main{border-color:#51b1e0 !important}.am-comment-primary .am-comment-main:before{border-right-color:#51b1e0 !important}.lg-article{border-radius:14px !important;background:#fff;box-shadow:0 1px 6px rgba(0,0,0,0.05)}.lg-article .am-form-group{margin-bottom:12px}.lg-article textarea#feed-content{width:100% !important;border:1px solid #e5e7eb !important;border-radius:10px !important;padding:12px 14px !important;font-size:14px;line-height:1.6;background:#fafafa !important;transition:all 0.24s ease;resize:none;box-sizing:border-box;outline:none}.lg-article textarea#feed-content:hover{background:#fff;border-color:#d1d5db}.lg-article textarea#feed-content:focus{background:#ffffff;border-color:#36bffb !important;box-shadow:0 0 0 3px rgba(54,191,251,0.15)}#feed-submit{border-radius:8px !important;padding:6px 18px !important;border:none;transition:opacity 0.2s}#feed-submit:hover{opacity:0.9}.message-block .message {border-radius: 16px;padding: 10px 14px !important;line-height: 1.55;max-width: 70%;box-shadow: 0 1px 3px rgba(0,0,0,0.06);font-size: 14px;word-break: break-all;border: none !important;background-clip: padding-box;overflow: hidden;}.message-block.right {flex-direction: row-reverse !important;}.message-block.right .message {border-top-right-radius: 4px;background-color: #95ec69 !important;color: #333 !important;border: none !important;}.message-block.left .message {border-top-left-radius: 4px;background-color: #ffffff !important;color: #333 !important;border: 1px solid #eeeeee !important;background-clip: padding-box;}.lg-article .feed-selector a {border-radius: 10px;display: block;}.ccf-info{font-size:8px!important;color:#666;margin:5px 0!important;display:block;line-height:1.2;text-align:center!important;}.follow-fans-info{display:flex;gap:20px;margin:2px 0 4px 0!important;align-items:center;justify-content:center!important;}.follow-fans-info a{text-decoration:none!important;display:flex;flex-direction:column;align-items:center;}.follow-fans-info .label{font-size:12px!important;color:#888!important;margin-bottom:2px;transition:color 0.2s ease;}.follow-fans-info .num{font-size:1em!important;font-weight:bold;color:#666!important;line-height:1;margin:0;transition:color 0.2s ease;}.follow-fans-info a:hover .label,.follow-fans-info a:hover .num{color:#0e90d2!important;text-decoration:none!important;}`);
     let nowurl = window.location.href;
     var swalcss=document.createElement("style");
     swalcss.innerHTML=".swal-overlay {background-color: rgba(0, 0, 0, 0.5);} .swal-overlay ";
@@ -149,8 +150,8 @@
             if(cookiename === name) return cookievalue;
         }
         if(name == 'version'){
-            setcookie('version','1.14.7',114514,'/','luogu.com.cn',true);
-            return "1.14.7";
+            setcookie('version','1.14.8',114514,'/','luogu.com.cn',true);
+            return "1.14.8";
         }
         else if(name == 'update'){
             setcookie('update','true',114514,'/','luogu.com.cn',true);
@@ -206,11 +207,11 @@
         });
     }
     function update(){
-        swal("Better Luogu!","修复了缺省源bug");
+        swal("Better Luogu!","1.修复了个人主页bug和ccf评级无法获取bug\n2.修改了一些css");
     }
-    if(getcookie('version')!='1.14.7'&&nowurl=='https://www.luogu.com.cn/'){
+    if(getcookie('version')!='1.14.8'&&nowurl=='https://www.luogu.com.cn/'){
         deletecookie('version');
-        setcookie('version','1.14.7',114514,'/','luogu.com.cn',true);
+        setcookie('version','1.14.8',114514,'/','luogu.com.cn',true);
         update();
     }
     function reallyDeleteChat(id){
@@ -1208,11 +1209,11 @@
                     let it=res['user'].introduction;
                     let introduction=DOMPurify.sanitize(marked.parse(it));
                     let jsCard=document.createElement('div');
-                    jsCard.setAttribute('data-v-c3407962','');
-                    jsCard.setAttribute('data-v-f4fefeb2','');
+                    jsCard.setAttribute('data-v-176b97b3','');
+                    jsCard.setAttribute('data-v-4ad5148e','');
                     jsCard.setAttribute('data-v-754e1ea4-s','');
                     jsCard.className='l-card';
-                    jsCard.innerHTML=`<div data-v-f4fefeb2="" class="header"><h3 data-v-f4fefeb2="" style="margin: 0px;">个人介绍（仅Better Luogu!可见）</h3><span data-v-f4fefeb2="" class="edit-button"><!----><button data-v-505b6a97="" data-v-f4fefeb2="" class="lform-size-small" type="button">复制<!----></button></span></div><br><div data-v-f4fefeb2="" class="lfe-marked-wrap introduction"><div class="lfe-marked">${introduction}</div></div>`;
+                    jsCard.innerHTML=`<div  data-v-4ad5148e="" class="header"><h3  data-v-4ad5148e="" style="margin: 0px;">个人介绍（仅Better Luogu!可见）</h3><span  data-v-4ad5148e="" class="edit-button"><!----><button data-v-505b6a97="" data-v-4ad5148e="" class="lform-size-small" type="button">复制<!----></button></span></div><br><div data-v-41d58f46="" class="lfe-marked-wrap introduction"><div class="lfe-marked">${introduction}</div></div>`;
                     let flag=1;
                     let main=document.querySelector('#app > div.main-container > main > div > div.l-card > div.user-header-bottom > div.menu > ul > li:nth-child(1) > span');
                     setInterval(function(){
@@ -1232,11 +1233,25 @@
                                 }
                             }
                             flag=0;
-                            let copyit=document.querySelector('#app > div.main-container > main > div > div.sidebar-container.reverse > div.main > div:nth-child(1) > div.header > span > button');
+                            let copyit=document.querySelector('#app > div.main-container.lside-nav > main > div > div.sidebar-container.reverse > div.main > div:nth-child(1) > div.header > span > button');
                             copyit.addEventListener('click',function(){GM_setClipboard(it);swal({title: "Better Luogu!",text: "用户信息已复制到剪贴板",icon: "success",topLayer: true});});
                         }
                         else flag=1;
                         if(document.querySelector('#app > div.main-container.lside-nav > main > div > div.l-card > div.user-header-bottom > div.menu > ul > li:nth-child(8)')!=null) jsCard.remove();
+                    },1000);
+                }
+                else{
+                    setInterval(function(){
+                        const mainBox = document.querySelector('div.main[style*="flex: 5 1 0%"]');
+                        let introCard = null;
+                        const allCards = mainBox.querySelectorAll('.l-card');
+                        if(mainBox&&allCards){
+                            allCards.forEach(card => {
+                                const title = card.querySelector('.header h3')?.innerText.trim();
+                                if (title&&title.includes('个人介绍')) introCard = card;
+                            });
+                            if (introCard) mainBox.insertBefore(introCard, mainBox.firstElementChild);
+                        }
                     },1000);
                 }
             });
@@ -1246,7 +1261,7 @@
             cachedGet(`https://www.luogu.com.cn/api/user/info/${useruid}`, {}, function(res) {
                 let follow = res['user'].followingCount || 0;
                 let fans = res['user'].followerCount || 0;
-                let ccfLevel = res['user']['rating']?.['user']?.ccfLevel || '未评级';
+                let ccfLevel = res['user'].ccfLevel || '未评级';
                 let ranking = res['user'].ranking || '未上榜';
                 let ccf = 'CCF 评级：' + ccfLevel;
                 let rankingText = '咕值排行：' + ranking;
@@ -1280,6 +1295,7 @@
                 userCard.appendChild(cr);
                 userCard.appendChild(f);
                 cachedGet(`https://www.luogu.com.cn/api/feed/list?user=${useruid}`, {}, function(feedRes) {
+                    console.log(1);
                     let feedCount = feedRes['feeds']?.['count'] || 0;
                     createFeedElement(feedCount);
                 }, 'feedList', 1);
