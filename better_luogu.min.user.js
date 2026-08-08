@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Better Luogu!
 // @namespace    https://www.luogu.com.cn/user/772464
-// @version      1.14.8
+// @version      1.14.9
 // @description:zh  洛谷扩展
 // @description  Luogu Expansion
 // @author       volatile
@@ -774,7 +774,6 @@
         swal("Better Luogu! - 关于","作者：volatile\n\n用户卡片相关：目前为防止短时间内大量访问，数据只会在一个小时内更新\n\nbadge相关：badge只能在当前设备上查看\n\n比赛用户查询相关：正在想办法替代");
     }
     window.onload=function(){
-        checkNotice();
         let button = document.createElement("a");
         button.innerHTML = '<button id="NLTB" style=\"background-color: rgb\(94,114,228\);border-radius: 7px;color: white;border: none;padding: 7px 12px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;margin: 4px 2px;cursor: pointer;border: none;box-shadow: 2px 3px 7px #000;\"><b>BETTER<b></button>';
         if(nowurl == 'https://www.luogu.com.cn/'||nowurl.includes('https://www.luogu.com.cn/chat')){
